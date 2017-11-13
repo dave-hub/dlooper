@@ -27,6 +27,14 @@ public class Loop {
 	 * The collection of patterns us
 	 */
 	private ArrayList<Pattern> patterns;
+	/**
+	 * Delay between polling the patterns for beats, equivalent
+	 */
+	private int pollDelay;
+	/**
+	 * True if at the end of the pattern, it plays the pattern again immediatly after.
+	 */
+	private boolean repeat;
 	
 	
 	// ------------
@@ -43,6 +51,8 @@ public class Loop {
 		this.bpm = bpm;
 		this.patternLength = patternLength;
 		this.patterns = new ArrayList<Pattern>();
+		this.repeat = false;
+		updatePollDelay();
 	}
 	
 	/**
@@ -59,20 +69,27 @@ public class Loop {
 	
 	
 	/**
+	 * Plays the patterns in the loop, will repeat
+	 * @throws InterruptedException
+	 */
+	public void play() throws InterruptedException {
+		do {
+			for (int i=0; i<patternLength-1; i++) {
+				for (Pattern pattern: patterns) {
+					pattern.playPosition(i);
+				}
+				Thread.sleep(pollDelay);
+			}
+		} while (repeat);
+	}
+	
+	/**
 	 * Adds a pattern to the patterns arraylist
 	 * @param pattern The pattern instance to add to patterns
 	 * @return True if patterns is changes as a result, this will rarely be false, no need to use the value
 	 */
-	private boolean addPattern(Pattern pattern) {
+	public boolean addPattern(Pattern pattern) {
 		return patterns.add(pattern);
-	}
-	
-	/**
-	 * Adds a new default pattern to the pattern list.
-	 * @return boolean from addPattern
-	 */
-	public boolean newPattern() {
-		return addPattern(new Pattern(getPatternLength()));
 	}
 	
 	/**
@@ -82,6 +99,16 @@ public class Loop {
 	 */
 	public Pattern getPatternAt(int index) {
 		return patterns.get(index);
+	}
+	
+	/**
+	 * Sets the poll delay to 60,000 / bpm, which produces the value of the length of the beat in milliseconds
+	 * E.g. 60,000 / 120 bpm = 600 ms.
+	 * Takes the current value of bpm for this.
+	 * Is called in setBpm for synchronicity
+	 */
+	private void updatePollDelay() {
+		setPollDelay(60000 / bpm);
 	}
 	
 	
@@ -98,22 +125,23 @@ public class Loop {
 		return bpm;
 	}
 
-	
 	/**
 	 * Sets the beats per minute at which the loop will play.
+	 * Also updates the pollDelay value to match the new bpm value.
 	 * @param bpm The bpm value, must be > 0
 	 * @return Returns false when the 
 	 */
 	public boolean setBpm(int bpm) {
 		if (bpm > 0) {
 			this.bpm = bpm;
+			updatePollDelay();
 			return true;
 		} else return false;
 	}
 
 	/**
 	 * Returns the value of the length of the pattern
-	 * @return
+	 * @return The patternLength value
 	 */
 	public int getPatternLength() {
 		return patternLength;
@@ -122,9 +150,40 @@ public class Loop {
 	/**
 	 * Set the pattern length to the given value
 	 * @param patternLength The length you want the patterns to be
+	 * @return False if patternLength given <= 0, in which case the patternLength of the object is unchanged.
 	 */
-	public void setPatternLength(int patternLength) {
-		this.patternLength = patternLength;
+	public boolean setPatternLength(int patternLength) {
+		if (patternLength > 0) {
+			this.patternLength = patternLength;
+			for (Pattern pattern: patterns) {
+				pattern.setLength(patternLength);
+			}
+			return true;
+		} else return false;
+	}
+	
+	/**
+	 * Returns the number of milliseconds between each polling of the pattern to see if it should play a sound.
+	 * @return The pollDelay value as an int representing milliseconds
+	 */
+	public int getPollDelay() {
+		return pollDelay;
+	}
+	
+	/**
+	 * Sets the delay in milliseconds between polling the pattern to the specified value.
+	 * @param pollDelay The value with which to set the pollDelay to.
+	 */
+	private void setPollDelay(int pollDelay) {
+		this.pollDelay = pollDelay;
+	}
+	
+	/**
+	 * Sets whether the pattern should repeat itself
+	 * @param repeat true if you want 
+	 */
+	public void setRepeat(boolean repeat) {
+		this.repeat = repeat;
 	}
 
 }

@@ -14,7 +14,7 @@ public class DLooper implements Controller{
 	/**
 	 * The loop which is currently being edited and played
 	 */
-	public Loop loop;
+	private Loop loop;
 	
 	
 	// -----------
@@ -40,6 +40,7 @@ public class DLooper implements Controller{
 	 * @param patternLength The length of the pattern
 	 * @param filePath The path to the audio file to load
 	 */
+	@Override
 	public void addPattern(String filePath) {
 		try {
 			loop.addPattern(new Pattern(loop.getPatternLength(), new DrumSound(filePath)));
@@ -55,6 +56,7 @@ public class DLooper implements Controller{
 	/**
 	 * Plays each pattern within the loop 
 	 */
+	@Override
 	public void play() {
 		try {
 			loop.play();
@@ -68,6 +70,7 @@ public class DLooper implements Controller{
 	 * @param bpm The desired bpm value as an int
 	 * @return False if the bpm <= 0, in which case the bpm value is unchanged
 	 */
+	@Override
 	public boolean setBpm(int bpm) {
 		return loop.setBpm(bpm);
 	}
@@ -79,6 +82,7 @@ public class DLooper implements Controller{
 	  * @param pattern The pattern which to attempt to use
 	  * @return True if the pattern was valid and the pattern has been changed.
 	  */
+	@Override
 	public boolean setPattern(int index, String pattern) {
 		return loop.getPatternAt(index).setPattern(pattern);
 	}
@@ -88,6 +92,7 @@ public class DLooper implements Controller{
 	 * @param patternLength
 	 * @return False if the length specified is <= 0
 	 */
+	@Override
 	public boolean setPatternLength(int patternLength) {
 		return loop.setPatternLength(patternLength);
 	}
@@ -98,6 +103,7 @@ public class DLooper implements Controller{
 	 * @param index
 	 * @param filePath
 	 */
+	@Override
 	public void setPatternSound(int index, String filePath) {
 		try {
 			loop.getPatternAt(index).setSoundFilePath(filePath);
@@ -112,10 +118,35 @@ public class DLooper implements Controller{
 	 * Calls setRepeat in loop, indicating whether the patterns should repeat themselves indefinitely.
 	 * @param repeat True if you want the loop to repeat.
 	 */
+	@Override
 	public void setRepeat(boolean repeat) {
 		loop.setRepeat(repeat);
 	}
 	
+	
+	// -----------
+	// Get Methods
+	// -----------
+	
+	
+	/**
+	 * Delegator function to get the pattern length of the loop
+	 * @return The pattern length of the loop as an int
+	 */
+	@Override
+	public int getPatternLength() {
+		return loop.getPatternLength();
+	}
+	
+	/**
+	 * Delegator function to get the BPM of the loop
+	 * @return The BPM of the loop as an int
+	 */
+	@Override
+	public int getBpm() {
+		return loop.getBpm();
+	}
+
 	
 	// -----------
 	// Main Method
@@ -129,4 +160,7 @@ public class DLooper implements Controller{
 	public static void main(String[] args) {
 
 	}
+
+
+	
 }

@@ -1,5 +1,10 @@
 package com.davehub.dlooper;
 
+/**
+ * Interface for a Controller that user interfaces interact with in a View-Controller-Model design
+ * @author dave
+ *
+ */
 public interface Controller {
 	/**
 	 * Adds a new pattern with the specified audio file
@@ -18,6 +23,11 @@ public interface Controller {
 	 */
 	public boolean setBpm(int bpm);
 	/**
+	 * Get the BPM setting of the current loop
+	 * @return The BPM as an int
+	 */
+	public int getBpm();
+	/**
 	 * Set the pattern at the given index to the pattern string specified
 	 * @param index The index of the pattern in the loop ArrayList
 	 * @param pattern The pattern string
@@ -31,6 +41,11 @@ public interface Controller {
 	 * @return
 	 */
 	public boolean setPatternLength(int length);
+	/**
+	 * Gets the pattern length of the current loop
+	 * @return The pattern length as an int
+	 */
+	public int getPatternLength();
 	/**
 	 * Sets the sound of the pattern at the given index, to the audio file specified by the file path
 	 * @param index The index of the pattern to change within the loop ArrayList

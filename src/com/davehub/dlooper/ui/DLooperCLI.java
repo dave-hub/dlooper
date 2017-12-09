@@ -17,7 +17,8 @@ public class DLooperCLI implements View {
 	 * Enum of runnable commands
 	 */
 	private enum Command {
-		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat};
+		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat,
+		view};
 		
 	/**
 	 * The Controller this user interface interacts with
@@ -41,6 +42,7 @@ public class DLooperCLI implements View {
 	public DLooperCLI() {
 		this.controller = new DLooper();
 		this.running = true;
+		controller.addViewer(this);
 	}
 	
 	
@@ -137,8 +139,10 @@ public class DLooperCLI implements View {
 	 * @param bpm
 	 */
 	public void setBpm(String bpm) {
+		System.out.println(bpm);
 		if (bpm.matches("[0-9]+")) {
 			int BPM = Integer.parseInt(bpm);
+			System.out.println(BPM);
 			if (!controller.setBpm(BPM)) {
 				System.out.println("ERROR: BPM not set, bpm <= 0");
 			}
@@ -169,48 +173,72 @@ public class DLooperCLI implements View {
 	}
 	
 	/**
+	 * Print the loop with some details
+	 */
+	public void view() {
+		System.out.println("Details:");
+		bpm();
+		patternLength();
+		System.out.println("----------------------");
+		int i = 0;
+		for (String pattern: controller.getPatterns()) {
+			System.out.println(i + ": " + pattern);
+			i++;
+		}
+		System.out.println("----------------------");
+	}
+	
+	/**
 	 * Executes the given command with the given arguments
 	 * @param command The command to execute
 	 * @param args Any arguments (can be empty)
-	 * @return True if the command was parsed.
 	 */
-	public boolean execute(String command, String[] args) {
+	public void execute(String command, String[] args) {
 		//matches Command to given string, set as help when command not recognised.
 		Command cmd = Command.help;
-		boolean parsed = false;
 		for (Command c: Command.values()) {
 			if (c.toString().equals(command)) {
 				cmd = c;
-				parsed = true;
 				break;
 			}
 		}
-		//if command was unrecognised, notify user, else execute
-		if (!parsed) {
-			System.out.println("ERROR: Unrecognised Command \"" + command + "\". Type \"help\" for help");
-		} else {
-			switch(cmd) {
-				case help:
-					help();
-				case quit:
-					quit();
-				case play:
-					play();
-				case addpattern:
+		switch(cmd) {
+			case help:
+				help();
+				break;
+			case quit:
+				quit();
+				break;
+			case play:
+				play();
+				break;
+			case addpattern:
+				if (args.length >= 1) //1 is for at least one argument in the array
 					addPattern(args[0]);
-				case setpl:
+				break;
+			case setpl:
+				if (args.length >= 1)
 					setPatternLength(args[0]);
-				case pl:
-					patternLength();
-				case setbpm:
+				break;
+			case pl:
+				patternLength();
+				break;
+			case setbpm:
+				if (args.length >= 1) 
 					setBpm(args[0]);
-				case bpm:
-					bpm();
-				case setrepeat:
+				break;
+			case bpm:
+				bpm();
+			case setrepeat:
+				if (args.length >= 1)
 					setRepeat(args[0]);
+				break;
+			case view:
+				view();
+			default:
+				System.out.println("ERROR: Unrecognised Command \"" + command + "\". Type \"help\" for help");
 			}
-		}
-		return parsed;
+		
 	}
 	
 	/**
@@ -243,11 +271,20 @@ public class DLooperCLI implements View {
 		//loop command execution until.
 		while(cli.running()) {
 			//Takes line from command line, splits into a command and arguments
-			String[] inputLine = input.nextLine().split(" ");
+			System.out.print(">>");
+			String inp = input.nextLine();
+			String[] inputLine = inp.split(" ");
+			for (String il: inputLine)
+				System.out.println(il);
 			String command = inputLine[0];
 			String[] arguments = new String[inputLine.length-1];
-			for (int i=1; i<inputLine.length-1; i++) {
-				arguments[i] = inputLine[i];
+			for (int i=1; i<inputLine.length; i++) {
+				System.out.println(inputLine[i]);
+				arguments[i-1] = inputLine[i];
+			}
+			for (String arg: arguments) {
+				System.out.println("\n arg");
+				System.out.println(arg);
 			}
 			//executes command
 			cli.execute(command, arguments);

@@ -1,5 +1,7 @@
 package com.davehub.dlooper;
 
+import com.davehub.dlooper.ui.View;
+
 /**
  * Interface for a Controller that user interfaces interact with in a View-Controller-Model design
  * @author dave
@@ -35,6 +37,17 @@ public interface Controller {
 	 */
 	public boolean setPattern(int index, String pattern);
 	/**
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public String getPattern(int index);
+	/**
+	 * Returns a list of the pattern strings in the loop.
+	 * @return The list of pattern strings
+	 */
+	public String[] getPatterns();
+	/**
 	 * Sets the pattern length of all patterns in the loop to the specified value
 	 * @param index The index of the patter
 	 * @param pattern
@@ -57,4 +70,9 @@ public interface Controller {
 	 * @param repeat True if you want the loop to repeat.
 	 */
 	public void setRepeat(boolean repeat);
+	/**
+	 * Connect a View component to allow passing Controller error messages back to the View
+	 * @param view The View object to connect
+	 */
+	public void addViewer(View view);
 }

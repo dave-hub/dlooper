@@ -117,6 +117,9 @@ public class Loop {
 	// -------------------
 	
 	
+	public String[] getPatterns() {
+		return (String[]) patterns.toArray();
+	}
 	/**
 	 * Returns the value of the current bpm
 	 * @return The bpm value as an int

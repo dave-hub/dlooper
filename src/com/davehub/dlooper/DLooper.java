@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import com.davehub.dlooper.ui.View;
+
 /**
  * Acts as a Controller in a View Model Controller design
  * @author dave-hub
@@ -15,6 +17,10 @@ public class DLooper implements Controller{
 	 * The loop which is currently being edited and played
 	 */
 	private Loop loop;
+	/**
+	 * The View this Controller connects to
+	 */
+	private View view;
 	
 	
 	// -----------
@@ -45,11 +51,14 @@ public class DLooper implements Controller{
 		try {
 			loop.addPattern(new Pattern(loop.getPatternLength(), new DrumSound(filePath)));
 		} catch (UnsupportedAudioFileException e) {
-			e.printStackTrace();
+			if (view != null)
+				view.displayError(DLooperError.UnsupportedAudioFormat);
 		} catch (LineUnavailableException e) {
-			e.printStackTrace();
+			if (view != null)
+				view.displayError(DLooperError.SystemAudioError);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if (view != null)
+				view.displayError(DLooperError.FileIOError);
 		}
 	}
 	
@@ -108,9 +117,11 @@ public class DLooper implements Controller{
 		try {
 			loop.getPatternAt(index).setSoundFilePath(filePath);
 		} catch (UnsupportedAudioFileException e) {
-			e.printStackTrace();
+			if (view != null)
+				view.displayError(DLooperError.UnsupportedAudioFormat);
 		} catch (IOException e) {
-			e.printStackTrace();
+			if (view != null)
+				view.displayError(DLooperError.FileIOError);
 		}
 	}
 	
@@ -121,6 +132,33 @@ public class DLooper implements Controller{
 	@Override
 	public void setRepeat(boolean repeat) {
 		loop.setRepeat(repeat);
+	}
+	
+	/**
+	 * Called by View object to allow communication
+	 */
+	@Override
+	public void addViewer(View view) {
+		this.view = view;
+	}
+	
+	/**
+	 * Returns a list of the pattern strings in the loop.
+	 * @return The list of pattern strings
+	 */
+	@Override
+	public String[] getPatterns() {
+		return loop.getPatterns();
+	}
+	
+	/**
+	 * Returns pattern string for pattern at given index
+	 * @param index The index of the pattern to retrieve
+	 * @return The pattern string of the pattern at the given index
+	 */
+	@Override
+	public String getPattern(int index) {
+		return loop.getPatternAt(index).getPattern();
 	}
 	
 	
@@ -145,20 +183,6 @@ public class DLooper implements Controller{
 	@Override
 	public int getBpm() {
 		return loop.getBpm();
-	}
-
-	
-	// -----------
-	// Main Method
-	// -----------
-	
-	
-	/**
-	 * Main method for running the program
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
 	}
 
 

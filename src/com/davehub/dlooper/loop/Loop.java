@@ -1,4 +1,4 @@
-package com.davehub.dlooper;
+package com.davehub.dlooper.loop;
 
 import java.util.ArrayList;
 

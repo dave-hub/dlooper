@@ -2,9 +2,8 @@ package com.davehub.dlooper.ui;
 
 import java.util.Scanner;
 
-import com.davehub.dlooper.Controller;
-import com.davehub.dlooper.DLooper;
-import com.davehub.dlooper.DLooperError;
+import com.davehub.dlooper.controller.Controller;
+import com.davehub.dlooper.controller.DLooper;
 
 /**
  * The runnable command line user interface for using the DLooper system
@@ -17,8 +16,8 @@ public class DLooperCLI implements View {
 	 * Enum of runnable commands
 	 */
 	private enum Command {
-		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat,
-		view};
+		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat, view
+	};
 		
 	/**
 	 * The Controller this user interface interacts with
@@ -42,29 +41,6 @@ public class DLooperCLI implements View {
 	public DLooperCLI() {
 		this.controller = new DLooper();
 		this.running = true;
-		controller.addViewer(this);
-	}
-	
-	
-	// -------------------
-	// Implemented Methods
-	// -------------------
-	
-	
-	/**
-	 * Prints an error message based on the input from the {@link com.davehub.dlooper.DLooperError}
-	 */
-	@Override
-	public void displayError(DLooperError e) {
-		switch(e) {
-			case UnsupportedAudioFormat:
-				System.out.println("ERROR: Unsupported Audio Format");
-				//Add accepted formats later, dont know them right now
-			case SystemAudioError:
-				System.out.println("ERROR: System Audio Unavailible");
-			case FileIOError:
-				System.out.println("ERROR: Couldn't read file, check spelling");
-		}
 	}
 	
 	
@@ -249,52 +225,41 @@ public class DLooperCLI implements View {
 		return running;
 	}
 	
+	
 	// ------------
 	// Main Methods
 	// ------------
 	
 	
-	public static void main(String[] args) {
+	public void run() {
 		//Init
 		System.out.println("Initialising...\n");
-		DLooperCLI cli = new DLooperCLI();
 		Scanner input = new Scanner(System.in);
 		
 		//Welcome Message
 		System.out.println("---Welcome To DLooper---");
 		System.out.println("Create looping drum beats from audio files.");
 		System.out.println("An empty Loop has been created for you to start with...");
-		cli.bpm();
-		cli.patternLength();
+		bpm();
+		patternLength();
 		System.out.println("Type 'help' for help with commands.\n");
 		
 		//loop command execution until.
-		while(cli.running()) {
+		while(running()) {
 			//Takes line from command line, splits into a command and arguments
 			System.out.print(">>");
 			String inp = input.nextLine();
 			String[] inputLine = inp.split(" ");
-			for (String il: inputLine)
-				System.out.println(il);
 			String command = inputLine[0];
 			String[] arguments = new String[inputLine.length-1];
 			for (int i=1; i<inputLine.length; i++) {
-				System.out.println(inputLine[i]);
 				arguments[i-1] = inputLine[i];
 			}
-			for (String arg: arguments) {
-				System.out.println("\n arg");
-				System.out.println(arg);
-			}
 			//executes command
-			cli.execute(command, arguments);
+			execute(command, arguments);
 		}
 		
 		//Exit
 		input.close();
-		System.exit(0);
-	}
-
-
-	
+	}	
 }

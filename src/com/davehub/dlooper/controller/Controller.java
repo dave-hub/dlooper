@@ -1,6 +1,4 @@
-package com.davehub.dlooper;
-
-import com.davehub.dlooper.ui.View;
+package com.davehub.dlooper.controller;
 
 /**
  * Interface for a Controller that user interfaces interact with in a View-Controller-Model design
@@ -70,9 +68,4 @@ public interface Controller {
 	 * @param repeat True if you want the loop to repeat.
 	 */
 	public void setRepeat(boolean repeat);
-	/**
-	 * Connect a View component to allow passing Controller error messages back to the View
-	 * @param view The View object to connect
-	 */
-	public void addViewer(View view);
 }

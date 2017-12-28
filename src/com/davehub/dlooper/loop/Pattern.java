@@ -1,9 +1,4 @@
-package com.davehub.dlooper;
-
-import java.io.IOException;
-
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+package com.davehub.dlooper.loop;
 
 public class Pattern {
 	
@@ -71,10 +66,13 @@ public class Pattern {
 	 * @return True if a sound is played
 	 */
 	public boolean playPosition(int patternPosition) {
-		if (patternPosition >= length)
+		if (patternPosition >= length) {
 			return false;
-		if (pattern.charAt(patternPosition) == symbol)
-			return sound.play();
+		}
+		if (pattern.charAt(patternPosition) == symbol) {
+			sound.play();
+			return true;
+		}
 		return false;
 	}
 	
@@ -85,19 +83,6 @@ public class Pattern {
 	 */
 	public char getSymbolAt(int position) {
 		return pattern.charAt(position);
-	}
-	
-	/**
-	 * Loads the file specified in DrumSound sound to the Clip, so that it can be played.
-	 * @throws IOException
-	 * @throws LineUnavailableException
-	 */
-	public void loadSound() throws IOException, LineUnavailableException {
-		try {
-			sound.open();
-		} catch (IOException | LineUnavailableException e) {
-			throw e;
-		}
 	}
 	
 	/**
@@ -119,10 +104,8 @@ public class Pattern {
 	/**
 	 * Sets the sound to play from the specified audio file.
 	 * @param filePath The path to the audio file to change the sound to
-	 * @throws UnsupportedAudioFileException When file is of unsupported format
-	 * @throws IOException When file cannot be read or be found
 	 */
-	public void setSoundFilePath(String filePath) throws UnsupportedAudioFileException, IOException {
+	public void setSoundFilePath(String filePath) {
 		sound.setFilePath(filePath);
 	}
 	

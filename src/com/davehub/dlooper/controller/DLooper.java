@@ -1,11 +1,8 @@
-package com.davehub.dlooper;
+package com.davehub.dlooper.controller;
 
-import java.io.IOException;
-
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
-import com.davehub.dlooper.ui.View;
+import com.davehub.dlooper.loop.DrumSound;
+import com.davehub.dlooper.loop.Loop;
+import com.davehub.dlooper.loop.Pattern;
 
 /**
  * Acts as a Controller in a View Model Controller design
@@ -17,10 +14,6 @@ public class DLooper implements Controller{
 	 * The loop which is currently being edited and played
 	 */
 	private Loop loop;
-	/**
-	 * The View this Controller connects to
-	 */
-	private View view;
 	
 	
 	// -----------
@@ -48,18 +41,7 @@ public class DLooper implements Controller{
 	 */
 	@Override
 	public void addPattern(String filePath) {
-		try {
-			loop.addPattern(new Pattern(loop.getPatternLength(), new DrumSound(filePath)));
-		} catch (UnsupportedAudioFileException e) {
-			if (view != null)
-				view.displayError(DLooperError.UnsupportedAudioFormat);
-		} catch (LineUnavailableException e) {
-			if (view != null)
-				view.displayError(DLooperError.SystemAudioError);
-		} catch (IOException e) {
-			if (view != null)
-				view.displayError(DLooperError.FileIOError);
-		}
+		loop.addPattern(new Pattern(loop.getPatternLength(), new DrumSound(filePath)));
 	}
 	
 	/**
@@ -114,15 +96,7 @@ public class DLooper implements Controller{
 	 */
 	@Override
 	public void setPatternSound(int index, String filePath) {
-		try {
-			loop.getPatternAt(index).setSoundFilePath(filePath);
-		} catch (UnsupportedAudioFileException e) {
-			if (view != null)
-				view.displayError(DLooperError.UnsupportedAudioFormat);
-		} catch (IOException e) {
-			if (view != null)
-				view.displayError(DLooperError.FileIOError);
-		}
+		loop.getPatternAt(index).setSoundFilePath(filePath);
 	}
 	
 	/**
@@ -132,14 +106,6 @@ public class DLooper implements Controller{
 	@Override
 	public void setRepeat(boolean repeat) {
 		loop.setRepeat(repeat);
-	}
-	
-	/**
-	 * Called by View object to allow communication
-	 */
-	@Override
-	public void addViewer(View view) {
-		this.view = view;
 	}
 	
 	/**

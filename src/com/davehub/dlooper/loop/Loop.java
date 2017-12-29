@@ -74,7 +74,7 @@ public class Loop {
 	 */
 	public void play() throws InterruptedException {
 		do {
-			for (int i=0; i<patternLength-1; i++) {
+			for (int i=0; i<patternLength; i++) {
 				for (Pattern pattern: patterns) {
 					pattern.playPosition(i);
 				}
@@ -89,6 +89,7 @@ public class Loop {
 	 * @return True if patterns is changes as a result, this will rarely be false, no need to use the value
 	 */
 	public boolean addPattern(Pattern pattern) {
+		pattern.setLength(patternLength);
 		return patterns.add(pattern);
 	}
 	
@@ -117,9 +118,19 @@ public class Loop {
 	// -------------------
 	
 	
+	/**
+	 * Gets an array of equal size to the number of patterns, containing the respective patterns' pattern strings
+	 * @return An array of pattern strings
+	 */
 	public String[] getPatterns() {
-		return (String[]) patterns.toArray();
+		String[] patternStrings = new String[patterns.size()];
+		int i = 0;
+		for (Pattern pattern: patterns) {
+			patternStrings[i++] = pattern.getPattern();
+		}
+		return patternStrings;
 	}
+	
 	/**
 	 * Returns the value of the current bpm
 	 * @return The bpm value as an int

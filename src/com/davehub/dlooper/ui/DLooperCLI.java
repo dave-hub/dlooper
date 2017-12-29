@@ -44,9 +44,9 @@ public class DLooperCLI implements View {
 	}
 	
 	
-	// -------
-	// Methods
-	// -------
+	// -----------------------
+	// Program Command Methods
+	// -----------------------
 	
 	
 	/**
@@ -56,13 +56,17 @@ public class DLooperCLI implements View {
 		System.out.println("\n---Help---\n");
 		System.out.println("help              - Displays the help message (this)");
 		System.out.println("quit              - Quits the program");
+		System.out.println("\n---Loop Control---");
 		System.out.println("play              - Plays the loop");
-		System.out.println("addpattern <file> - Adds a new pattern with the specified file as the sound");
+		System.out.println("view              - View the loop");
 		System.out.println("setpl <length>	  - Sets the length of the patterns to the specified length");
 		System.out.println("pl                - Prints the current pattern length");
 		System.out.println("setbpm <bpm>      - Sets the BPM to the given int");
 		System.out.println("bpm               - Prints the current BPM");
 		System.out.println("setrepeat <bool>  - Sets whether to repeat or not, true to repeat.");
+		System.out.println("\n---Pattern Control---");
+		System.out.println("addpattern <file>          - Adds a new pattern with the specified file as the sound");
+		System.out.println("setpattern <num> <pattern> - Sets the pattern at the given number to the pattern given");
 		System.out.println("\n----------\n");
 	}
 	
@@ -73,21 +77,42 @@ public class DLooperCLI implements View {
 		this.running = false;
 	}
 	
+	
+	// ------------
+	// Loop Control
+	// ------------
+	
+	
 	/**
 	 * Plays the loop
 	 */
 	public void play() {
 		controller.play();
 	}
-	
+
 	/**
-	 * Adds a pattern with the sound from the given sound
-	 * @param filePath The path to a sound file.
+	 * Print the loop with some details
 	 */
-	public void addPattern(String filePath) {
-		controller.addPattern(filePath);
+	public void view() {
+		System.out.println("Details:");
+		bpm();
+		patternLength();
+		System.out.println("----------------------");
+		int i = 0;
+		for (String pattern: controller.getPatterns()) {
+			System.out.println(i + ": " + pattern);
+			i++;
+		}
+		System.out.println("----------------------");
 	}
 	
+	/**
+	 * Displays the current pattern length
+	 */
+	public void patternLength() {
+		System.out.println("Pattern Length: " + controller.getPatternLength());
+	}
+
 	/**
 	 * Sets the pattern length of all patterns in the loop
 	 * @param length The length of which you want the pattern
@@ -102,12 +127,12 @@ public class DLooperCLI implements View {
 			System.out.println("ERROR: Argument must be an integer");
 		}
 	}
-	
+
 	/**
-	 * Displays the current pattern length
+	 * Displays the current bpm
 	 */
-	public void patternLength() {
-		System.out.println("Pattern Length: " + controller.getPatternLength());
+	public void bpm() {
+		System.out.println("Beats Per Minute: " + controller.getBpm());
 	}
 	
 	/**
@@ -128,13 +153,6 @@ public class DLooperCLI implements View {
 	}
 	
 	/**
-	 * Displays the current bpm
-	 */
-	public void bpm() {
-		System.out.println("Beats Per Minute: " + controller.getBpm());
-	}
-	
-	/**
 	 * Sets whether the loop repeats when playing
 	 * @param repeat String representing "true" or "false", printing an error otherwise.
 	 */
@@ -148,21 +166,25 @@ public class DLooperCLI implements View {
 		}
 	}
 	
+	
+	// ---------------
+	// Pattern Control
+	// ---------------
+	
+	
 	/**
-	 * Print the loop with some details
+	 * Adds a pattern with the sound from the given sound
+	 * @param filePath The path to a sound file.
 	 */
-	public void view() {
-		System.out.println("Details:");
-		bpm();
-		patternLength();
-		System.out.println("----------------------");
-		int i = 0;
-		for (String pattern: controller.getPatterns()) {
-			System.out.println(i + ": " + pattern);
-			i++;
-		}
-		System.out.println("----------------------");
+	public void addPattern(String filePath) {
+		controller.addPattern(filePath);
 	}
+	
+	
+	// -------
+	// Methods
+	// -------
+	
 	
 	/**
 	 * Executes the given command with the given arguments

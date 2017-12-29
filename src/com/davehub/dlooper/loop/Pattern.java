@@ -19,10 +19,6 @@ public class Pattern {
 	 */
 	private DrumSound sound;
 	/**
-	 * The maximum length the pattern string is allowed to be, to be played properly
-	 */
-	private int length;
-	/**
 	 * The symbol representing an audible beat within the pattern
 	 */
 	private char symbol;
@@ -39,19 +35,17 @@ public class Pattern {
 	 * @param length The length of the pattern, maintains the number of characters in the pattern string
 	 * @param symbol The symbol used to represent an audible beat within the pattern string
 	 */
-	private Pattern(String pattern, DrumSound sound, int length, char symbol) {
+	private Pattern(String pattern, DrumSound sound, char symbol) {
 		this.sound = sound;
-		this.length = length;
 		this.symbol = symbol;
-		setLength(length);
 	}
 	
 	/**
 	 * The sets constructor used by user interfaces
 	 * @param patternLength The length of the patterns, for ensuring pattern strings don't exceed this
 	 */
-	public Pattern(int patternLength, DrumSound sound) {
-		this("", sound, patternLength, DEFAULT_SYMBOL);
+	public Pattern(DrumSound sound) {
+		this("", sound, DEFAULT_SYMBOL);
 	}
 	
 	
@@ -66,7 +60,7 @@ public class Pattern {
 	 * @return True if a sound is played
 	 */
 	public boolean playPosition(int patternPosition) {
-		if (patternPosition >= length) {
+		if (patternPosition >= pattern.length()) {
 			return false;
 		}
 		if (pattern.charAt(patternPosition) == symbol) {
@@ -91,7 +85,7 @@ public class Pattern {
 	 * @return True if the pattern given is of the right length and contains the right characters to be used in this pattern object
 	 */
 	private boolean validatePattern(String pattern) {
-		if (pattern.length() == length) {
+		if (pattern.length() == pattern.length()) {
 			for (char x: pattern.toCharArray()) {
 				if (!(x == PAUSE_SYMBOL || x == symbol)) {
 					return false;
@@ -140,7 +134,7 @@ public class Pattern {
 	 * @return The length of the pattern
 	 */
 	public int getLength() {
-		return length;
+		return pattern.length();
 	}
 	
 	/**
@@ -149,7 +143,6 @@ public class Pattern {
 	 */
 	public boolean setLength(int length) {
 		if (length > 0) {
-			this.length = length;
 			while (pattern.length() < length) {
 				pattern += PAUSE_SYMBOL;
 			}

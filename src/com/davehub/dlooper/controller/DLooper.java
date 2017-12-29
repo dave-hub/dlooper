@@ -41,7 +41,7 @@ public class DLooper implements Controller{
 	 */
 	@Override
 	public void addPattern(String filePath) {
-		loop.addPattern(new Pattern(loop.getPatternLength(), new DrumSound(filePath)));
+		loop.addPattern(new Pattern(new DrumSound(filePath)));
 	}
 	
 	/**

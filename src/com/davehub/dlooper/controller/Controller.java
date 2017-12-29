@@ -46,6 +46,11 @@ public interface Controller {
 	 */
 	public String[] getPatterns();
 	/**
+	 * Returns the number of patterns in the loop
+	 * @return The number of patterns in the loop
+	 */
+	public int getNumPatterns();
+	/**
 	 * Sets the pattern length of all patterns in the loop to the specified value
 	 * @param index The index of the patter
 	 * @param pattern

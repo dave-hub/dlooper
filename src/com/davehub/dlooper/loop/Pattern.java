@@ -5,7 +5,7 @@ public class Pattern {
 	/**
 	 * The default symbol used to represent an audible beat within the pattern string
 	 */
-	private static final char DEFAULT_SYMBOL = 'X';
+	private static final char DEFAULT_SYMBOL = 'x';
 	/**
 	 * The symbol used to represent a pause, where no sound is playing for this pattern
 	 */
@@ -36,6 +36,7 @@ public class Pattern {
 	 * @param symbol The symbol used to represent an audible beat within the pattern string
 	 */
 	private Pattern(String pattern, DrumSound sound, char symbol) {
+		this.pattern = pattern;
 		this.sound = sound;
 		this.symbol = symbol;
 	}
@@ -146,7 +147,7 @@ public class Pattern {
 			while (pattern.length() < length) {
 				pattern += PAUSE_SYMBOL;
 			}
-			this.pattern = pattern.substring(0, length-1);
+			this.pattern = pattern.substring(0, length);
 			return true;
 		} else return false;
 	}

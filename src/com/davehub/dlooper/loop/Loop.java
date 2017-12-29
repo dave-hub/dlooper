@@ -132,6 +132,14 @@ public class Loop {
 	}
 	
 	/**
+	 * Returns the number of patterns in the loop
+	 * @return the number of patterns in the loop
+	 */
+	public int getNumPatterns() {
+		return patterns.size();
+	}
+	
+	/**
 	 * Returns the value of the current bpm
 	 * @return The bpm value as an int
 	 */

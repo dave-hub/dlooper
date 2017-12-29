@@ -118,6 +118,15 @@ public class DLooper implements Controller{
 	}
 	
 	/**
+	 * Returns the number of patterns in the loop
+	 * @return The number of patterns in the loop
+	 */
+	@Override
+	public int getNumPatterns() {
+		return loop.getNumPatterns();
+	}
+	
+	/**
 	 * Returns pattern string for pattern at given index
 	 * @param index The index of the pattern to retrieve
 	 * @return The pattern string of the pattern at the given index
@@ -150,7 +159,4 @@ public class DLooper implements Controller{
 	public int getBpm() {
 		return loop.getBpm();
 	}
-
-
-	
 }

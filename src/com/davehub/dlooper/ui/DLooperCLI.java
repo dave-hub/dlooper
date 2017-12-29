@@ -1,6 +1,7 @@
 package com.davehub.dlooper.ui;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import com.davehub.dlooper.controller.Controller;
 import com.davehub.dlooper.controller.DLooper;
@@ -16,7 +17,7 @@ public class DLooperCLI implements View {
 	 * Enum of runnable commands
 	 */
 	private enum Command {
-		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat, view
+		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat, view, setpattern, unknown
 	};
 		
 	/**
@@ -94,16 +95,16 @@ public class DLooperCLI implements View {
 	 * Print the loop with some details
 	 */
 	public void view() {
-		System.out.println("Details:");
+		System.out.println("\n---Pattern---\n");
 		bpm();
 		patternLength();
-		System.out.println("----------------------");
+		System.out.println();
 		int i = 0;
 		for (String pattern: controller.getPatterns()) {
 			System.out.println(i + ": " + pattern);
 			i++;
 		}
-		System.out.println("----------------------");
+		System.out.println();
 	}
 	
 	/**
@@ -180,6 +181,22 @@ public class DLooperCLI implements View {
 		controller.addPattern(filePath);
 	}
 	
+	public void setPattern(int index, String pattern) {
+		if (pattern.length() != controller.getPatternLength()) {
+			System.out.println("ERROR: Given pattern is not of correct length");
+			System.out.println("Pattern Length: " + controller.getPatternLength());
+			System.out.println("Given Pattern:  " + pattern.length());
+			return;
+		}
+		if (index >= controller.getNumPatterns()) {
+			System.out.println("ERROR: Given pattern number out of range.");
+			if (controller.getNumPatterns() > 0) {
+				System.out.println("Pattern number range: 0 - " + (controller.getNumPatterns()-1));
+			} else System.out.println("There are currently no patterns, use 'addpattern' to add one");
+			return;
+		}
+		controller.setPattern(index, pattern);
+	}
 	
 	// -------
 	// Methods
@@ -193,7 +210,7 @@ public class DLooperCLI implements View {
 	 */
 	public void execute(String command, String[] args) {
 		//matches Command to given string, set as help when command not recognised.
-		Command cmd = Command.help;
+		Command cmd = Command.unknown;
 		for (Command c: Command.values()) {
 			if (c.toString().equals(command)) {
 				cmd = c;
@@ -211,32 +228,45 @@ public class DLooperCLI implements View {
 				play();
 				break;
 			case addpattern:
-				if (args.length >= 1) //1 is for at least one argument in the array
+				if (args.length >= 1) {
 					addPattern(args[0]);
+				} else System.out.println("ERROR: Requires one argument.");
 				break;
 			case setpl:
-				if (args.length >= 1)
+				if (args.length >= 1) {
 					setPatternLength(args[0]);
+				} else System.out.println("ERROR: Requires one argument.");
 				break;
 			case pl:
 				patternLength();
 				break;
 			case setbpm:
-				if (args.length >= 1) 
+				if (args.length >= 1) {
 					setBpm(args[0]);
+				} else System.out.println("ERROR: Requires one argument.");
 				break;
 			case bpm:
 				bpm();
+				break;
 			case setrepeat:
-				if (args.length >= 1)
+				if (args.length >= 1) {
 					setRepeat(args[0]);
+				} else System.out.println("ERROR: Requires one argument.");
 				break;
 			case view:
 				view();
+				break;
+			case setpattern:
+				if (args.length >= 2) {
+					if (isNumeric(args[0])) {
+						setPattern(Integer.parseInt(args[0]), args[1]);
+					} else System.out.println("ERROR: First arguemnt must be numeric.");
+				} else System.out.println("ERROR: Requires two arguments.");
+				break;
 			default:
 				System.out.println("ERROR: Unrecognised Command \"" + command + "\". Type \"help\" for help");
-			}
-		
+				break;
+		}
 	}
 	
 	/**
@@ -245,6 +275,16 @@ public class DLooperCLI implements View {
 	 */
 	private boolean running() {
 		return running;
+	}
+	
+	
+	// ------------------
+	// Validation Methods
+	// ------------------
+	
+	
+	public static boolean isNumeric(String str) {
+		return Pattern.compile("[0-9]+").matcher(str).matches();
 	}
 	
 	

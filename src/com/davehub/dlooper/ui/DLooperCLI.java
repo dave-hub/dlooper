@@ -6,12 +6,14 @@ import java.util.regex.Pattern;
 import com.davehub.dlooper.controller.Controller;
 import com.davehub.dlooper.controller.DLooper;
 
+import javafx.application.Application;
+
 /**
  * The runnable command line user interface for using the DLooper system
  * @author dave
  *
  */
-public class DLooperCLI implements View {
+public class DLooperCLI implements Runnable {
 	
 	/**
 	 * Enum of runnable commands
@@ -36,12 +38,12 @@ public class DLooperCLI implements View {
 	// -----------
 	
 	
-	/**
-	 * Default constructor, creates a DLooper Controller
-	 */
-	public DLooperCLI() {
-		this.controller = new DLooper();
+	public DLooperCLI(Controller controller) {
+		this.controller = controller;
 		this.running = true;
+	}
+	public DLooperCLI() {
+		this(new DLooper());
 	}
 	
 	
@@ -141,10 +143,8 @@ public class DLooperCLI implements View {
 	 * @param bpm
 	 */
 	public void setBpm(String bpm) {
-		System.out.println(bpm);
 		if (bpm.matches("[0-9]+")) {
 			int BPM = Integer.parseInt(bpm);
-			System.out.println(BPM);
 			if (!controller.setBpm(BPM)) {
 				System.out.println("ERROR: BPM not set, bpm <= 0");
 			}
@@ -293,6 +293,7 @@ public class DLooperCLI implements View {
 	// ------------
 	
 	
+	@Override
 	public void run() {
 		//Init
 		System.out.println("Initialising...\n");
@@ -323,5 +324,15 @@ public class DLooperCLI implements View {
 		
 		//Exit
 		input.close();
-	}	
+	}
+	
+	public static void main(String[] args) {
+		DLooper controller = new DLooper();
+		
+		DLooperCLI cli = new DLooperCLI(controller);
+		Thread interfaceThread = new Thread(cli);
+		
+		controller.run(args);
+		
+	}
 }

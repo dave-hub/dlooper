@@ -1,5 +1,7 @@
 package com.davehub.dlooper.loop;
 
+import javafx.application.Platform;
+
 public class Pattern {
 	
 	/**
@@ -39,6 +41,8 @@ public class Pattern {
 		this.pattern = pattern;
 		this.sound = sound;
 		this.symbol = symbol;
+		Thread t = new Thread(sound);
+		t.start();
 	}
 	
 	/**

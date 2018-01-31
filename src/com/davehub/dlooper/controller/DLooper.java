@@ -4,11 +4,14 @@ import com.davehub.dlooper.loop.DrumSound;
 import com.davehub.dlooper.loop.Loop;
 import com.davehub.dlooper.loop.Pattern;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 /**
  * Acts as a Controller in a View Model Controller design
  * @author dave-hub
  */
-public class DLooper implements Controller{
+public class DLooper extends Application implements Controller {
 	
 	/**
 	 * The loop which is currently being edited and played
@@ -49,11 +52,7 @@ public class DLooper implements Controller{
 	 */
 	@Override
 	public void play() {
-		try {
-			loop.play();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		loop.play();
 	}
 	
 	/**
@@ -158,5 +157,15 @@ public class DLooper implements Controller{
 	@Override
 	public int getBpm() {
 		return loop.getBpm();
+	}
+
+	public void run(String[] args) {
+		launch(args);
+	}
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		//live latch thread
+		
 	}
 }

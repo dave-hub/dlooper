@@ -2,6 +2,9 @@ package com.davehub.dlooper.loop;
 
 import java.util.ArrayList;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 /**
  * Represents a playable drum loop through layers of patterns that play sounds to mimic playing the drums
  */
@@ -70,15 +73,18 @@ public class Loop {
 	
 	/**
 	 * Plays the patterns in the loop, will repeat
-	 * @throws InterruptedException
 	 */
-	public void play() throws InterruptedException {
+	public void play() {
 		do {
 			for (int i=0; i<patternLength; i++) {
 				for (Pattern pattern: patterns) {
 					pattern.playPosition(i);
 				}
-				Thread.sleep(pollDelay);
+				try {
+					Thread.sleep(pollDelay);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		} while (repeat);
 	}
@@ -207,5 +213,4 @@ public class Loop {
 	public void setRepeat(boolean repeat) {
 		this.repeat = repeat;
 	}
-
 }

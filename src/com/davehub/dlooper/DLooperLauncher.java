@@ -13,11 +13,11 @@ public class DLooperLauncher extends Application {
 		DLooperCLI cli = new DLooperCLI();
 		cli.run();
 		Platform.exit();
-		System.exit(0);
 	}
 
 	public static void main(String[] args) {
 		launch(args);
+		System.exit(0);
 	}
 
 }

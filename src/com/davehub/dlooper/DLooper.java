@@ -1,5 +1,13 @@
 package com.davehub.dlooper;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import com.davehub.dlooper.loop.DrumSound;
 import com.davehub.dlooper.loop.Loop;
 import com.davehub.dlooper.loop.Pattern;
@@ -39,9 +47,10 @@ public class DLooper implements Controller {
 	 * Adds a pattern to the loop with the given length and audio file specified by path.
 	 * @param patternLength The length of the pattern
 	 * @param filePath The path to the audio file to load
+	 * @throws Exception 
 	 */
 	@Override
-	public void addPattern(String filePath) {
+	public void addPattern(String filePath) throws Exception {
 		loop.addPattern(new Pattern(new DrumSound(filePath)));
 	}
 	
@@ -53,6 +62,23 @@ public class DLooper implements Controller {
 		loop.play();
 	}
 	
+	/**
+	 * Returns the loop this controller uses
+	 * @return The loop instance this controller controls
+	 */
+	public Loop getLoop() {
+		return loop;
+	}
+
+	/**
+	 * Set this controller to use the given loop
+	 * @param loop The loop to use.
+	 */
+	private void setLoop(Loop loop) {
+		this.loop = loop;
+	}
+
+
 	/**
 	 * Sets the loop bpm to the given value
 	 * @param bpm The desired bpm value as an int
@@ -90,9 +116,10 @@ public class DLooper implements Controller {
 	 * Handles exceptions depending on the interface type
 	 * @param index
 	 * @param filePath
+	 * @throws Exception 
 	 */
 	@Override
-	public void setPatternSound(int index, String filePath) {
+	public void setPatternSound(int index, String filePath) throws Exception {
 		loop.getPatternAt(index).setSoundFilePath(filePath);
 	}
 	
@@ -102,7 +129,7 @@ public class DLooper implements Controller {
 	 */
 	@Override
 	public String[] getPatterns() {
-		return loop.getPatterns();
+		return loop.getPatternStrings();
 	}
 	
 	/**
@@ -158,6 +185,67 @@ public class DLooper implements Controller {
 	@Override
 	public void setRepeat(boolean repeat) {
 		loop.setRepeat(repeat);
+	}
+
+	/**
+	 * Save to file at the given path. Will create a new file.
+	 * @param filePath The path of the file to save to.
+	 * @throws IOException 
+	 */
+	@Override
+	public void saveToFile(String filePath) throws IOException {
+		File file = new File(filePath);
+		FileWriter fw = new FileWriter(file.toURI().toString());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(loop.toString());
+		bw.close();
+	}
+	
+	/**
+	 * Loads the loop from the given file to this controller
+	 */
+	public void loadFromFile(String filePath) throws IOException, Exception{
+		BufferedReader br = new BufferedReader(new FileReader(filePath));
+		String line;
+		ArrayList<String> patternLines = new ArrayList<String>();
+		
+		//read loop settings from first 2 lines
+		String patternLengthString = br.readLine();
+		String bpmString = br.readLine();
+		
+		//read patterns from file
+		while ((line = br.readLine()) != null) {
+			patternLines.add(line);
+		}
+		
+		br.close();
+		
+		//check for errors
+		if (!isNumeric(patternLengthString)) {
+			throw new Exception("Line 1: Pattern Length should be only numeric");
+		}
+		if (!isNumeric(bpmString)) {
+			throw new Exception("Line 2: Beats Per Minute should be only numeric");
+		}
+		
+		
+		//initialise new Loop
+		Loop loop = new Loop(Integer.parseInt(bpmString), Integer.parseInt(patternLengthString));
+		
+		//add patterns
+		for (String patternLine: patternLines) {
+			String[] parts = patternLine.split(" ");
+			Pattern pattern = new Pattern(new DrumSound(parts[0]));
+			pattern.setPattern(parts[1]);
+			loop.addPattern(pattern);
+		}
+		
+		//Load the loop into this controller
+		setLoop(loop);
+	}
+	
+	private static boolean isNumeric(String str) {
+		return java.util.regex.Pattern.compile("[0-9]+").matcher(str).matches();
 	}
 	
 }

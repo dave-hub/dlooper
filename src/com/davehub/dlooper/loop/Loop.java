@@ -1,13 +1,15 @@
 package com.davehub.dlooper.loop;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Timer;
-import java.util.TimerTask;
+
+import com.davehub.dlooper.LoopTask;
 
 /**
  * Represents a playable drum loop through layers of patterns that play sounds to mimic playing the drums
  */
-public class Loop extends TimerTask {
+public class Loop {
 	
 	/**
 	 * The default bpm set when starting a new loop in any user interface
@@ -35,10 +37,6 @@ public class Loop extends TimerTask {
 	 */
 	private int pollDelay;
 	/**
-	 * The current beat when playing the loop.
-	 */
-	private int currentBeat;
-	/**
 	 * True if at the end of the pattern, it plays the pattern again immediatly after.
 	 */
 	private boolean repeat;
@@ -54,12 +52,11 @@ public class Loop extends TimerTask {
 	 * @param bpm The beats per minute at which the loop will play
 	 * @param patternLength The maximum length that a pattern can be
 	 */
-	private Loop(int bpm, int patternLength) {
+	public Loop(int bpm, int patternLength) {
 		this.bpm = bpm;
 		this.patternLength = patternLength;
 		this.timer = new Timer();
 		this.patterns = new ArrayList<Pattern>();
-		this.currentBeat = 0;
 		this.repeat = false;
 		updatePollDelay();
 	}
@@ -81,7 +78,8 @@ public class Loop extends TimerTask {
 	 * Starts a timer to play
 	 */
 	public void play() {
-		timer.scheduleAtFixedRate(this, 0, pollDelay);
+		timer = new Timer();
+		timer.scheduleAtFixedRate(new LoopTask(this), 0, pollDelay);
 	}
 	
 	/**
@@ -89,17 +87,6 @@ public class Loop extends TimerTask {
 	 */
 	public void stop() {
 		timer.cancel();
-	}
-	
-	/**
-	 * Called by the Timer, attempts to play each of the sounds of the loop 
-	 */
-	@Override
-	public void run() {
-		for (Pattern pattern: patterns) {
-			pattern.playPosition(currentBeat);
-		}
-		currentBeat++;
 	}
 	
 	/**
@@ -141,13 +128,21 @@ public class Loop extends TimerTask {
 	 * Gets an array of equal size to the number of patterns, containing the respective patterns' pattern strings
 	 * @return An array of pattern strings
 	 */
-	public String[] getPatterns() {
+	public String[] getPatternStrings() {
 		String[] patternStrings = new String[patterns.size()];
 		int i = 0;
 		for (Pattern pattern: patterns) {
 			patternStrings[i++] = pattern.getPattern();
 		}
 		return patternStrings;
+	}
+	
+	/**
+	 * Get the Collection of patterns in this loop
+	 * @return A Collection of patterns
+	 */
+	public Collection<Pattern> getPatterns() {
+		return patterns;
 	}
 	
 	/**
@@ -233,6 +228,30 @@ public class Loop extends TimerTask {
 	 */
 	public boolean getRepeat() {
 		return repeat;
+	}
+	
+	/**
+	 * Returns the loop in a string format used for saving to file
+	 * lines:
+	 * 1: (pattern length)
+	 * 2: (bpm)
+	 * 3..n: (pattern file path) (pattern string)
+	 * 
+	 * Replacing any bracketed section with the real value
+	 * 
+	 * e.g.:
+	 * 1: 8
+	 * 2: 160
+	 * 3: samples/acoustic1/kick1 x-x-x-x-
+	 * 4: samples/acoustic1/snareclosed1 -x-x-x-x
+	 */
+	@Override
+	public String toString() {
+		String output = "";
+		for (Pattern pattern: patterns) {
+			output += pattern.getSound().getFilePath() + pattern.getPattern() + "\n";
+		}
+		return output;
 	}
 	
 }

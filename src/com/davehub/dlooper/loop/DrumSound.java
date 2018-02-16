@@ -2,8 +2,6 @@ package com.davehub.dlooper.loop;
 
 import java.io.File;
 
-import javax.sound.midi.SysexMessage;
-
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -27,8 +25,9 @@ public class DrumSound extends Thread {
 	/**
 	 * Main constructor
 	 * @param filePath Path of the audio file which this drum sound plays
+	 * @throws Exception 
 	 */
-	public DrumSound(String filePath) {
+	public DrumSound(String filePath) throws Exception {
 		this.setFilePath(filePath);
 	}
 	
@@ -60,16 +59,18 @@ public class DrumSound extends Thread {
 	 * Sets the filePath to the new filePath, updating the audiostream too
 	 * @param filePath
 	 */
-	public void setFilePath(String filePath) {
+	public void setFilePath(String filePath) throws Exception {
 		try {
 			this.filePath = filePath;
 			this.media = new Media(new File(filePath).toURI().toString());
 		} catch (Exception e) {
-			System.err.println("ERROR: Unable to read file (" + filePath + ")");
+			throw new Exception("Unable to read file: " + filePath);
 		}
 	}
 
-
+	/**
+	 * Plays this DrumSound's audio
+	 */
 	public void play() {
 		new MediaPlayer(media).play();
 	}

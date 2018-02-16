@@ -1,5 +1,7 @@
 package com.davehub.dlooper.ui;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -20,7 +22,7 @@ public class DLooperCLI extends Application {
 	 * Enum of runnable commands
 	 */
 	private enum Command {
-		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat, view, setpattern, unknown
+		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat, view, setpattern, save, load, unknown
 	};
 		
 	/**
@@ -63,6 +65,8 @@ public class DLooperCLI extends Application {
 		System.out.println("\n---Loop Control---");
 		System.out.println("play              - Plays the loop");
 		System.out.println("view              - View the loop");
+		System.out.println("save <path>       - Save the loop to the file at the given path");
+		System.out.println("load <path>       - Load the loop from the file at the specified path");
 		System.out.println("setpl <length>	  - Sets the length of the patterns to the specified length");
 		System.out.println("pl                - Prints the current pattern length");
 		System.out.println("setbpm <bpm>      - Sets the BPM to the given int");
@@ -111,6 +115,36 @@ public class DLooperCLI extends Application {
 	}
 	
 	/**
+	 * Load the loop from the given file.
+	 * @param filePath The file containing the loop.
+	 */
+	private void loadFromFile(String filePath) {
+		try {
+			controller.saveToFile(filePath);
+		} catch (FileNotFoundException e) {
+			System.err.println("ERROR: File not found");
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Save loop to given file.
+	 * @param filePath The file to save the loop to.
+	 */
+	private void saveToFile(String filePath) {
+		try {
+			controller.loadFromFile(filePath);
+
+		} catch (IOException e) {
+			System.err.println("ERROR: Could not write to file");
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	/**
 	 * Displays the current pattern length
 	 */
 	public void patternLength() {
@@ -125,10 +159,10 @@ public class DLooperCLI extends Application {
 		if (length.matches("[0-9]+")) {
 			int len = Integer.parseInt(length);
 			if (!controller.setPatternLength(len)) {
-				System.out.println("ERROR: Pattern length not set, length <= 0");
+				System.out.println("ERROR: Pattern length not set, length <= 0.");
 			}
 		} else {
-			System.out.println("ERROR: Argument must be an integer");
+			System.out.println("ERROR: Argument must be an integer.");
 		}
 	}
 
@@ -179,9 +213,18 @@ public class DLooperCLI extends Application {
 	 * @param filePath The path to a sound file.
 	 */
 	public void addPattern(String filePath) {
-		controller.addPattern(filePath);
+		try {
+			controller.addPattern(filePath);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
+	/**
+	 * Sets the pattern at the given index to the given pattern
+	 * @param index The index of the pattern, the number to the left of the pattern when using 'view'
+	 * @param pattern The pattern string to set the Pattern at the given index to.
+	 */
 	public void setPattern(int index, String pattern) {
 		if (pattern.length() != controller.getPatternLength()) {
 			System.out.println("ERROR: Given pattern is not of correct length");
@@ -263,6 +306,16 @@ public class DLooperCLI extends Application {
 						setPattern(Integer.parseInt(args[0]), args[1]);
 					} else System.out.println("ERROR: First arguemnt must be numeric.");
 				} else System.out.println("ERROR: Requires two arguments.");
+				break;
+			case save:
+				if (args.length >= 1) {
+					saveToFile(args[0]);
+				} else System.out.println("ERROR: Must specify file to save to.");
+				break;
+			case load:
+				if (args.length >= 1) {
+					loadFromFile(args[0]);
+				} else System.out.println("ERROR: Must specify file to load from.");
 				break;
 			default:
 				System.out.println("ERROR: Unrecognised Command \"" + command + "\". Type \"help\" for help");

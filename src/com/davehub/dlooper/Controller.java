@@ -1,5 +1,7 @@
 package com.davehub.dlooper;
 
+import java.io.IOException;
+
 /**
  * Interface for a Controller that user interfaces interact with in a View-Controller-Model design
  * @author dave
@@ -9,8 +11,9 @@ public interface Controller {
 	/**
 	 * Adds a new pattern with the specified audio file
 	 * @param filePath The path to the audio file
+	 * @throws Exception 
 	 */
-	public void addPattern(String filePath);
+	public void addPattern(String filePath) throws Exception;
 	/**
 	 * Starts the loop playing
 	 */
@@ -65,8 +68,9 @@ public interface Controller {
 	 * Sets the sound of the pattern at the given index, to the audio file specified by the file path
 	 * @param index The index of the pattern to change within the loop ArrayList
 	 * @param filePath The path to the audio file
+	 * @throws Exception 
 	 */
-	public void setPatternSound(int index, String filePath);
+	public void setPatternSound(int index, String filePath) throws Exception;
 	/**
 	 * Returns the current repeat setting.
 	 */
@@ -76,4 +80,15 @@ public interface Controller {
 	 * @param repeat True if you want the loop to repeat.
 	 */
 	public void setRepeat(boolean repeat);
+	/**
+	 * Save to a file of the given path. Will create a file.
+	 * @param filePath The path to the file to save to. 
+	 * @throws IOException 
+	 */
+	public void saveToFile(String filePath) throws IOException;
+	/**
+	 * Loads the loop from the given file.
+	 * @param filePath
+	 */
+	public void loadFromFile(String filePath) throws IOException, Exception;
 }

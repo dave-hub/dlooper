@@ -101,8 +101,9 @@ public class Pattern {
 	/**
 	 * Sets the sound to play from the specified audio file.
 	 * @param filePath The path to the audio file to change the sound to
+	 * @throws Exception 
 	 */
-	public void setSoundFilePath(String filePath) {
+	public void setSoundFilePath(String filePath) throws Exception {
 		sound.setFilePath(filePath);
 	}
 	
@@ -112,6 +113,22 @@ public class Pattern {
 	// -------------------
 	
 	
+	/**
+	 * Return the sound of this pattern 
+	 * @return The DrumSound that this pattern plays
+	 */
+	public DrumSound getSound() {
+		return sound;
+	}
+
+	/**
+	 * Sets the pattern to play the given sound
+	 * @param sound The DrumSound to make this pattern play
+	 */
+	public void setSound(DrumSound sound) {
+		this.sound = sound;
+	}
+
 	/**
 	 * Returns the string that represents the pattern
 	 * @return The pattern string

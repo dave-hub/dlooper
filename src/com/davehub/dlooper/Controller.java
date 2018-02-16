@@ -1,6 +1,9 @@
 package com.davehub.dlooper;
 
 import java.io.IOException;
+import java.util.Collection;
+
+import com.davehub.dlooper.loop.Pattern;
 
 /**
  * Interface for a Controller that user interfaces interact with in a View-Controller-Model design
@@ -48,16 +51,21 @@ public interface Controller {
 	 */
 	public boolean setPattern(int index, String pattern);
 	/**
-	 * 
-	 * @param index
-	 * @return
+	 * Get the pattern string at the given index.
+	 * @param index The index of the pattern
+	 * @return Returns the pattern string at the given index
 	 */
 	public String getPattern(int index);
 	/**
 	 * Returns a list of the pattern strings in the loop.
 	 * @return The list of pattern strings
 	 */
-	public String[] getPatterns();
+	public String[] getPatternStrings();
+	/**
+	 * Return a collection of the patterns in the loop.
+	 * @return A Collection of patterns.
+	 */
+	public Collection<Pattern> getPatterns();
 	/**
 	 * Returns the number of patterns in the loop
 	 * @return The number of patterns in the loop
@@ -95,8 +103,9 @@ public interface Controller {
 	 * Save to a file of the given path. Will create a file.
 	 * @param filePath The path to the file to save to. 
 	 * @throws IOException 
+	 * @throws Exception 
 	 */
-	public void saveToFile(String filePath) throws IOException;
+	public void saveToFile(String filePath) throws IOException, Exception;
 	/**
 	 * Loads the loop from the given file.
 	 * @param filePath

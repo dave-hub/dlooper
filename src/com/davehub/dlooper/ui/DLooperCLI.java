@@ -3,12 +3,13 @@ package com.davehub.dlooper.ui;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import com.davehub.dlooper.Controller;
 import com.davehub.dlooper.DLooper;
+import com.davehub.dlooper.loop.Pattern;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
@@ -116,8 +117,8 @@ public class DLooperCLI extends Application {
 		patternLength();
 		System.out.println();
 		int i = 0;
-		for (String pattern: controller.getPatterns()) {
-			System.out.println(i + ": " + pattern);
+		for (Pattern pattern: controller.getPatterns()) {
+			System.out.println(i + ": " + pattern.getPattern() + " (" + pattern.getSound().getFilePath() + ")");
 			i++;
 		}
 		System.out.println();
@@ -129,7 +130,7 @@ public class DLooperCLI extends Application {
 	 */
 	private void loadFromFile(String filePath) {
 		try {
-			controller.saveToFile(filePath);
+			controller.loadFromFile(filePath);
 		} catch (FileNotFoundException e) {
 			System.err.println("ERROR: File not found");
 		} catch (Exception e) {
@@ -144,8 +145,7 @@ public class DLooperCLI extends Application {
 	 */
 	private void saveToFile(String filePath) {
 		try {
-			controller.loadFromFile(filePath);
-
+			controller.saveToFile(filePath);
 		} catch (IOException e) {
 			System.err.println("ERROR: Could not write to file");
 		} catch (Exception e) {
@@ -368,7 +368,7 @@ public class DLooperCLI extends Application {
 	
 	
 	public static boolean isNumeric(String str) {
-		return Pattern.compile("[0-9]+").matcher(str).matches();
+		return java.util.regex.Pattern.compile("[0-9]+").matcher(str).matches();
 	}
 	
 	
@@ -390,11 +390,11 @@ public class DLooperCLI extends Application {
 		bpm();
 		patternLength();
 		System.out.println("Type 'help' for help with commands.\n");
+		System.out.print(">>");
 		
 		//loop command execution until.
 		while(running()) {
 			//Takes line from command line, splits into a command and arguments
-			System.out.print(">>");
 			String inp = input.nextLine();
 			String[] inputLine = inp.split(" ");
 			String command = inputLine[0];
@@ -404,6 +404,7 @@ public class DLooperCLI extends Application {
 			}
 			//executes command
 			execute(command, arguments);
+			System.out.print(">>");
 		}
 		
 		//Exit
@@ -412,10 +413,9 @@ public class DLooperCLI extends Application {
 	
 	public static void main(String[] args) {
 		DLooper controller = new DLooper();
-		
 		DLooperCLI cli = new DLooperCLI(controller);
-		
 		cli.start(null);
-		
+		Platform.exit();
+        System.exit(0);
 	}
 }

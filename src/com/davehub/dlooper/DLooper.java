@@ -2,11 +2,11 @@ package com.davehub.dlooper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import com.davehub.dlooper.loop.DrumSound;
 import com.davehub.dlooper.loop.Loop;
@@ -148,8 +148,17 @@ public class DLooper implements Controller {
 	 * @return The list of pattern strings
 	 */
 	@Override
-	public String[] getPatterns() {
+	public String[] getPatternStrings() {
 		return loop.getPatternStrings();
+	}
+	
+	/**
+	 * Returns a Collection of the Patterns in the loop.
+	 * @return Returns a Collection of Patterns
+	 */
+	@Override
+	public Collection<Pattern> getPatterns() {
+		return loop.getPatterns();
 	}
 	
 	/**
@@ -214,11 +223,14 @@ public class DLooper implements Controller {
 	 */
 	@Override
 	public void saveToFile(String filePath) throws IOException {
-		File file = new File(filePath);
-		FileWriter fw = new FileWriter(file.toURI().toString());
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(loop.toString());
-		bw.close();
+		try (BufferedWriter bw = new BufferedWriter(new PrintWriter(filePath))) {
+			System.out.println("Writing to file: " + filePath);
+			bw.write(loop.toString());
+			System.out.println("Done.");
+			bw.close();
+		} catch (IOException e) {
+			throw e;
+		}
 	}
 	
 	/**
@@ -255,8 +267,8 @@ public class DLooper implements Controller {
 		//add patterns
 		for (String patternLine: patternLines) {
 			String[] parts = patternLine.split(" ");
-			Pattern pattern = new Pattern(new DrumSound(parts[0]));
-			pattern.setPattern(parts[1]);
+			Pattern pattern = new Pattern(new DrumSound(parts[1]));
+			pattern.setPattern(parts[0]);
 			loop.addPattern(pattern);
 		}
 		

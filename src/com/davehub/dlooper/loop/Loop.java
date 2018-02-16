@@ -249,21 +249,23 @@ public class Loop {
 	 * lines:
 	 * 1: (pattern length)
 	 * 2: (bpm)
-	 * 3..n: (pattern file path) (pattern string)
+	 * 3..n: (pattern string) (pattern file path)
 	 * 
 	 * Replacing any bracketed section with the real value
 	 * 
 	 * e.g.:
 	 * 1: 8
 	 * 2: 160
-	 * 3: samples/acoustic1/kick1 x-x-x-x-
-	 * 4: samples/acoustic1/snareclosed1 -x-x-x-x
+	 * 3: x-x-x-x- samples/acoustic1/kick1 
+	 * 4: -x-x-x-x samples/acoustic1/snareclosed1
 	 */
 	@Override
 	public String toString() {
 		String output = "";
+		output += patternLength + "\n";
+		output += bpm + "\n";
 		for (Pattern pattern: patterns) {
-			output += pattern.getSound().getFilePath() + pattern.getPattern() + "\n";
+			output += pattern.getPattern() + " " + pattern.getSound().getFilePath()  + "\n";
 		}
 		return output;
 	}

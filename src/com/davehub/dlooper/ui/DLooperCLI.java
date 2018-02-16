@@ -3,17 +3,18 @@ package com.davehub.dlooper.ui;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import com.davehub.dlooper.controller.Controller;
-import com.davehub.dlooper.controller.DLooper;
+import com.davehub.dlooper.Controller;
+import com.davehub.dlooper.DLooper;
 
 import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * The runnable command line user interface for using the DLooper system
  * @author dave
  *
  */
-public class DLooperCLI implements Runnable {
+public class DLooperCLI extends Application {
 	
 	/**
 	 * Enum of runnable commands
@@ -294,7 +295,7 @@ public class DLooperCLI implements Runnable {
 	
 	
 	@Override
-	public void run() {
+	public void start(Stage stage0) {
 		//Init
 		System.out.println("Initialising...\n");
 		Scanner input = new Scanner(System.in);
@@ -330,9 +331,8 @@ public class DLooperCLI implements Runnable {
 		DLooper controller = new DLooper();
 		
 		DLooperCLI cli = new DLooperCLI(controller);
-		Thread interfaceThread = new Thread(cli);
 		
-		controller.run(args);
+		cli.start(null);
 		
 	}
 }

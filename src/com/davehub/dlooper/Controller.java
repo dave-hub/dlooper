@@ -1,4 +1,4 @@
-package com.davehub.dlooper.controller;
+package com.davehub.dlooper;
 
 /**
  * Interface for a Controller that user interfaces interact with in a View-Controller-Model design
@@ -13,7 +13,6 @@ public interface Controller {
 	public void addPattern(String filePath);
 	/**
 	 * Starts the loop playing
-	 * Calls
 	 */
 	public void play();
 	/**
@@ -68,6 +67,10 @@ public interface Controller {
 	 * @param filePath The path to the audio file
 	 */
 	public void setPatternSound(int index, String filePath);
+	/**
+	 * Returns the current repeat setting.
+	 */
+	public boolean getRepeat();
 	/**
 	 * Set the loop to repeat or not
 	 * @param repeat True if you want the loop to repeat.

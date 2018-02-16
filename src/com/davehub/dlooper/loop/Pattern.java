@@ -1,7 +1,5 @@
 package com.davehub.dlooper.loop;
 
-import javafx.application.Platform;
-
 public class Pattern {
 	
 	/**

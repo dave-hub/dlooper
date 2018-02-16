@@ -1,15 +1,11 @@
 package com.davehub.dlooper.loop;
 
 import java.io.File;
-import java.io.IOException;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
+import javax.sound.midi.SysexMessage;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.stage.Stage;
 
 public class DrumSound extends Thread {
 
@@ -21,14 +17,6 @@ public class DrumSound extends Thread {
 	 * The clip used to play audio streams to the system
 	 */
 	private Media media;
-	/**
-	 * Boolean for main thread loop to continue
-	 */
-	private Boolean running;
-	/**
-	 * Flag to trigger a play call within the main thread loop
-	 */
-	private Boolean playFlag;
 	
 	
 	// ------------
@@ -42,8 +30,6 @@ public class DrumSound extends Thread {
 	 */
 	public DrumSound(String filePath) {
 		this.setFilePath(filePath);
-		this.running = false;
-		this.playFlag = false;
 	}
 	
 	
@@ -60,7 +46,11 @@ public class DrumSound extends Thread {
 		return filePath;
 	}
 	
-	private synchronized Media getMedia() {
+	/**
+	 * Returns the Media instance this DrumSound uses
+	 * @return the Media instance this sound represents
+	 */
+	public synchronized Media getMedia() {
 		synchronized(this) {
 			return this.media;
 		}
@@ -70,52 +60,18 @@ public class DrumSound extends Thread {
 	 * Sets the filePath to the new filePath, updating the audiostream too
 	 * @param filePath
 	 */
-	public synchronized void setFilePath(String filePath) {
-		synchronized(this) {
+	public void setFilePath(String filePath) {
+		try {
 			this.filePath = filePath;
 			this.media = new Media(new File(filePath).toURI().toString());
-			this.running = false;
-		}
-	}
-	
-	private synchronized boolean getPlayFlag() {
-		synchronized(this) {
-			return this.playFlag;
-		}
-	}
-	
-	// -------
-	// Methods
-	// -------
-	
-	
-	/**
-	 * Sets the playflag to trigger a play event in the main thread.
-	 */
-	public synchronized void play() {
-		System.out.println("play called");
-		
-	}
-	
-	private synchronized void setPlayFlag(boolean b) {
-		synchronized(this) {
-			this.playFlag = true;
-		}
-	}
-
-	@Override
-	public void run() {
-		this.running = true;
-		while (running) {
-			if (getPlayFlag()) {
-				MediaPlayer player = new MediaPlayer(getMedia());
-				System.out.println("hit");
-				player.play();
-				setPlayFlag(false);
-			}
+		} catch (Exception e) {
+			System.err.println("ERROR: Unable to read file (" + filePath + ")");
 		}
 	}
 
 
+	public void play() {
+		new MediaPlayer(media).play();
+	}
 	
 }

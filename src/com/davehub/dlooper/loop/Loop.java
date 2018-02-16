@@ -1,14 +1,13 @@
 package com.davehub.dlooper.loop;
 
 import java.util.ArrayList;
-
-import javafx.application.Application;
-import javafx.stage.Stage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Represents a playable drum loop through layers of patterns that play sounds to mimic playing the drums
  */
-public class Loop {
+public class Loop extends TimerTask {
 	
 	/**
 	 * The default bpm set when starting a new loop in any user interface
@@ -19,6 +18,11 @@ public class Loop {
 	 */
 	private static final int DEFAULT_PATTERN_LENGTH = 32;
 	/**
+	 * The collection of patterns us
+	 */
+	private ArrayList<Pattern> patterns;
+	private Timer timer;
+	/**
 	 * Value of the beats per minute at which the loop will play.
 	 */
 	private int bpm;
@@ -27,13 +31,13 @@ public class Loop {
 	 */
 	private int patternLength;
 	/**
-	 * The collection of patterns us
-	 */
-	private ArrayList<Pattern> patterns;
-	/**
 	 * Delay between polling the patterns for beats, equivalent
 	 */
 	private int pollDelay;
+	/**
+	 * The current beat when playing the loop.
+	 */
+	private int currentBeat;
 	/**
 	 * True if at the end of the pattern, it plays the pattern again immediatly after.
 	 */
@@ -53,7 +57,9 @@ public class Loop {
 	private Loop(int bpm, int patternLength) {
 		this.bpm = bpm;
 		this.patternLength = patternLength;
+		this.timer = new Timer();
 		this.patterns = new ArrayList<Pattern>();
+		this.currentBeat = 0;
 		this.repeat = false;
 		updatePollDelay();
 	}
@@ -72,21 +78,28 @@ public class Loop {
 	
 	
 	/**
-	 * Plays the patterns in the loop, will repeat
+	 * Starts a timer to play
 	 */
 	public void play() {
-		do {
-			for (int i=0; i<patternLength; i++) {
-				for (Pattern pattern: patterns) {
-					pattern.playPosition(i);
-				}
-				try {
-					Thread.sleep(pollDelay);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		} while (repeat);
+		timer.scheduleAtFixedRate(this, 0, pollDelay);
+	}
+	
+	/**
+	 * Stops the loop from playing
+	 */
+	public void stop() {
+		timer.cancel();
+	}
+	
+	/**
+	 * Called by the Timer, attempts to play each of the sounds of the loop 
+	 */
+	@Override
+	public void run() {
+		for (Pattern pattern: patterns) {
+			pattern.playPosition(currentBeat);
+		}
+		currentBeat++;
 	}
 	
 	/**
@@ -207,10 +220,19 @@ public class Loop {
 	}
 	
 	/**
-	 * Sets whether the pattern should repeat itself
-	 * @param repeat true if you want 
+	 * Calls setRepeat in loop, indicating whether the patterns should repeat themselves indefinitely.
+	 * @param repeat True if you want the loop to repeat.
 	 */
 	public void setRepeat(boolean repeat) {
 		this.repeat = repeat;
 	}
+	
+	/**
+	 * Gets whether the loop will repeat or not.
+	 * @return True if the loop repeats
+	 */
+	public boolean getRepeat() {
+		return repeat;
+	}
+	
 }

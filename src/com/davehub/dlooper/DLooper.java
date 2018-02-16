@@ -1,22 +1,20 @@
-package com.davehub.dlooper.controller;
+package com.davehub.dlooper;
 
 import com.davehub.dlooper.loop.DrumSound;
 import com.davehub.dlooper.loop.Loop;
 import com.davehub.dlooper.loop.Pattern;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-
 /**
  * Acts as a Controller in a View Model Controller design
  * @author dave-hub
  */
-public class DLooper extends Application implements Controller {
+public class DLooper implements Controller {
 	
 	/**
 	 * The loop which is currently being edited and played
 	 */
 	private Loop loop;
+	
 	
 	
 	// -----------
@@ -99,15 +97,6 @@ public class DLooper extends Application implements Controller {
 	}
 	
 	/**
-	 * Calls setRepeat in loop, indicating whether the patterns should repeat themselves indefinitely.
-	 * @param repeat True if you want the loop to repeat.
-	 */
-	@Override
-	public void setRepeat(boolean repeat) {
-		loop.setRepeat(repeat);
-	}
-	
-	/**
 	 * Returns a list of the pattern strings in the loop.
 	 * @return The list of pattern strings
 	 */
@@ -135,12 +124,6 @@ public class DLooper extends Application implements Controller {
 		return loop.getPatternAt(index).getPattern();
 	}
 	
-	
-	// -----------
-	// Get Methods
-	// -----------
-	
-	
 	/**
 	 * Delegator function to get the pattern length of the loop
 	 * @return The pattern length of the loop as an int
@@ -159,13 +142,22 @@ public class DLooper extends Application implements Controller {
 		return loop.getBpm();
 	}
 
-	public void run(String[] args) {
-		launch(args);
+	/**
+	 * Get the current repeat setting of the loop
+	 * @return True if the loop will repeat
+	 */
+	@Override
+	public boolean getRepeat() {
+		return loop.getRepeat();
 	}
 	
+	/**
+	 * Set the loop to repeat or not
+	 * @param repeat True to make the loop repeat
+	 */
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-		//live latch thread
-		
+	public void setRepeat(boolean repeat) {
+		loop.setRepeat(repeat);
 	}
+	
 }

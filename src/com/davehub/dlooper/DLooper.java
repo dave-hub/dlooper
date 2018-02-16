@@ -63,6 +63,14 @@ public class DLooper implements Controller {
 	}
 	
 	/**
+	 * Stops playing the loop
+	 */
+	@Override
+	public void stop() {
+		loop.stop();
+	}
+	
+	/**
 	 * Returns the loop this controller uses
 	 * @return The loop instance this controller controls
 	 */

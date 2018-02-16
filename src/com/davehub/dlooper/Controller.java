@@ -19,6 +19,10 @@ public interface Controller {
 	 */
 	public void play();
 	/**
+	 * Stops playing the loop
+	 */
+	public void stop();
+	/**
 	 * Sets the bpm to the given value
 	 * @param bpm The desired bpm value
 	 * @return False when bpm <= 0, in which case the bpm isnt changed

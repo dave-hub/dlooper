@@ -22,7 +22,7 @@ public class DLooperCLI extends Application {
 	 * Enum of runnable commands
 	 */
 	private enum Command {
-		help, quit, play, addpattern, setpl, pl, setbpm, bpm, setrepeat, view, setpattern, save, load, unknown
+		help, quit, play, stop, addpattern, setpl, pl, setbpm, bpm, setrepeat, view, setpattern, save, load, unknown
 	};
 		
 	/**
@@ -64,6 +64,7 @@ public class DLooperCLI extends Application {
 		System.out.println("quit              - Quits the program");
 		System.out.println("\n---Loop Control---");
 		System.out.println("play              - Plays the loop");
+		System.out.println("stop              - Stops playing");
 		System.out.println("view              - View the loop");
 		System.out.println("save <path>       - Save the loop to the file at the given path");
 		System.out.println("load <path>       - Load the loop from the file at the specified path");
@@ -94,10 +95,17 @@ public class DLooperCLI extends Application {
 	/**
 	 * Plays the loop
 	 */
-	public void play() {
+	public void playLoop() {
 		controller.play();
 	}
 
+	/**
+	 * Stops the loop from playing
+	 */
+	private void stopLoop() {
+		controller.stop();
+	}
+	
 	/**
 	 * Print the loop with some details
 	 */
@@ -269,7 +277,10 @@ public class DLooperCLI extends Application {
 				quit();
 				break;
 			case play:
-				play();
+				playLoop();
+				break;
+			case stop:
+				stopLoop();
 				break;
 			case addpattern:
 				if (args.length >= 1) {

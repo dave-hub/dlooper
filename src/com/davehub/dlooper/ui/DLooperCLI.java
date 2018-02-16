@@ -22,7 +22,7 @@ public class DLooperCLI extends Application {
 	 * Enum of runnable commands
 	 */
 	private enum Command {
-		help, quit, play, stop, addpattern, setpl, pl, setbpm, bpm, setrepeat, view, setpattern, save, load, unknown
+		help, quit, play, stop, addpattern, rmpattern, setpl, pl, setbpm, bpm, setrepeat, view, setpattern, save, load, unknown
 	};
 		
 	/**
@@ -75,7 +75,8 @@ public class DLooperCLI extends Application {
 		System.out.println("setrepeat <bool>  - Sets whether to repeat or not, true to repeat.");
 		System.out.println("\n---Pattern Control---");
 		System.out.println("addpattern <file>          - Adds a new pattern with the specified file as the sound");
-		System.out.println("setpattern <num> <pattern> - Sets the pattern at the given number to the pattern given");
+		System.out.println("rmpattern <num>            - Removes the pattern with the given number");
+		System.out.println("setpattern <num> <pattern> - Sets the pattern with the given number to the pattern given");
 		System.out.println("\n----------\n");
 	}
 	
@@ -229,6 +230,17 @@ public class DLooperCLI extends Application {
 	}
 	
 	/**
+	 * Remvoes the pattern at the given index
+	 * @param index The index of the pattern to remove within the loop
+	 */
+	private boolean rmPattern(int index) {
+		if(!controller.removePattern(index)) {
+			System.out.println("ERROR: Pattern " + index + " does not exist.");
+			return false;
+		} else return true;
+	}
+	
+	/**
 	 * Sets the pattern at the given index to the given pattern
 	 * @param index The index of the pattern, the number to the left of the pattern when using 'view'
 	 * @param pattern The pattern string to set the Pattern at the given index to.
@@ -285,6 +297,13 @@ public class DLooperCLI extends Application {
 			case addpattern:
 				if (args.length >= 1) {
 					addPattern(args[0]);
+				} else System.out.println("ERROR: Requires one argument.");
+				break;
+			case rmpattern:
+				if (args.length >= 1) {
+					if (isNumeric(args[0])) {
+						rmPattern(Integer.parseInt(args[0]));
+					} else System.out.println("ERROR: Arguemnt must be numeric.");
 				} else System.out.println("ERROR: Requires one argument.");
 				break;
 			case setpl:

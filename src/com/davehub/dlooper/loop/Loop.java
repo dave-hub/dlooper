@@ -23,6 +23,9 @@ public class Loop {
 	 * The collection of patterns us
 	 */
 	private ArrayList<Pattern> patterns;
+	/**
+	 * The timer for playing the loop at a given bpm
+	 */
 	private Timer timer;
 	/**
 	 * Value of the beats per minute at which the loop will play.
@@ -97,6 +100,17 @@ public class Loop {
 	public boolean addPattern(Pattern pattern) {
 		pattern.setLength(patternLength);
 		return patterns.add(pattern);
+	}
+	
+	/**
+	 * Removes the pattern at the given index from the loop
+	 * @param index The index of the pattern, the number on the left when using 'view'
+	 * @return True if the pattern was in the loop and was removed.
+	 */
+	public boolean removePattern(int index) {
+		if (patterns.remove(index) != null)
+			return true;
+		else return false;
 	}
 	
 	/**

@@ -8,12 +8,7 @@ import java.io.IOException;
  *
  */
 public interface Controller {
-	/**
-	 * Adds a new pattern with the specified audio file
-	 * @param filePath The path to the audio file
-	 * @throws Exception 
-	 */
-	public void addPattern(String filePath) throws Exception;
+	
 	/**
 	 * Starts the loop playing
 	 */
@@ -33,6 +28,18 @@ public interface Controller {
 	 * @return The BPM as an int
 	 */
 	public int getBpm();
+	/**
+	 * Adds a new pattern with the specified audio file
+	 * @param filePath The path to the audio file
+	 * @throws Exception 
+	 */
+	public void addPattern(String filePath) throws Exception;
+	/**
+	 * Removes the pattern at the given index from the loop
+	 * @param index The index of the pattern, the number on the left when using 'view'
+	 * @return True if the pattern was in the loop and was removed.
+	 */
+	public boolean removePattern(int index);
 	/**
 	 * Set the pattern at the given index to the pattern string specified
 	 * @param index The index of the pattern in the loop ArrayList

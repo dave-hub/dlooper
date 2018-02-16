@@ -43,16 +43,7 @@ public class DLooper implements Controller {
 	// -------
 	
 	
-	/**
-	 * Adds a pattern to the loop with the given length and audio file specified by path.
-	 * @param patternLength The length of the pattern
-	 * @param filePath The path to the audio file to load
-	 * @throws Exception 
-	 */
-	@Override
-	public void addPattern(String filePath) throws Exception {
-		loop.addPattern(new Pattern(new DrumSound(filePath)));
-	}
+	
 	
 	/**
 	 * Plays each pattern within the loop 
@@ -96,14 +87,35 @@ public class DLooper implements Controller {
 	public boolean setBpm(int bpm) {
 		return loop.setBpm(bpm);
 	}
-
-	 /**
-	  * Attempts to set the pattern at the given index to the given string
-	  * @see com.davehub.dlooper.Pattern.setPattern
-	  * @param index The index of the pattern within the loop's pattern array 
-	  * @param pattern The pattern which to attempt to use
-	  * @return True if the pattern was valid and the pattern has been changed.
-	  */
+	
+	/**
+	 * Adds a pattern to the loop with the given length and audio file specified by path.
+	 * @param patternLength The length of the pattern
+	 * @param filePath The path to the audio file to load
+	 * @throws Exception 
+	 */
+	@Override
+	public void addPattern(String filePath) throws Exception {
+		loop.addPattern(new Pattern(new DrumSound(filePath)));
+	}
+	
+	/**
+	 * Removes the pattern at the given index from the loop
+	 * @param index The index of the pattern, the number on the left when using 'view'
+	 * @return True if the pattern was in the loop and was removed.
+	 */
+	@Override
+	public boolean removePattern(int index) {
+		return loop.removePattern(index);
+	}
+	
+	/**
+	 * Attempts to set the pattern at the given index to the given string
+	 * @see com.davehub.dlooper.Pattern.setPattern
+	 * @param index The index of the pattern within the loop's pattern array 
+	 * @param pattern The pattern which to attempt to use
+	 * @return True if the pattern was valid and the pattern has been changed.
+	 */
 	@Override
 	public boolean setPattern(int index, String pattern) {
 		return loop.getPatternAt(index).setPattern(pattern);

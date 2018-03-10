@@ -2,9 +2,11 @@ package com.davehub.dlooper.loop;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Timer;
 
-import com.davehub.dlooper.LoopTask;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 /**
  * Represents a playable drum loop through layers of patterns that play sounds to mimic playing the drums
@@ -26,7 +28,7 @@ public class Loop {
 	/**
 	 * The timer for playing the loop at a given bpm
 	 */
-	private Timer timer;
+	private Timeline timer;
 	/**
 	 * Value of the beats per minute at which the loop will play.
 	 */
@@ -43,6 +45,10 @@ public class Loop {
 	 * True if at the end of the pattern, it plays the pattern again immediatly after.
 	 */
 	private boolean repeat;
+	/**
+	 * The current beat during playback
+	 */
+	private int currentBeat;
 	
 	
 	// ------------
@@ -58,9 +64,10 @@ public class Loop {
 	public Loop(int bpm, int patternLength) {
 		this.bpm = bpm;
 		this.patternLength = patternLength;
-		this.timer = new Timer();
+		this.timer = new Timeline();
 		this.patterns = new ArrayList<Pattern>();
 		this.repeat = false;
+		this.currentBeat = 0;
 		updatePollDelay();
 	}
 	
@@ -81,15 +88,49 @@ public class Loop {
 	 * Starts a timer to play
 	 */
 	public void play() {
-		timer = new Timer();
-		timer.scheduleAtFixedRate(new LoopTask(this), 0, pollDelay);
+		currentBeat = 0;
+		this.timer = new Timeline(new KeyFrame(
+		    Duration.millis(pollDelay),
+		    ae ->{playBeat(nextBeat());
+		}));
+		if (repeat) {
+			timer.setCycleCount(Animation.INDEFINITE);
+		} else {
+			timer.setCycleCount(patternLength);
+		}
+		timer.play();
+	}
+	
+	/**
+	 * Returns the next beat, increasing the value of the current beat so the next call will be one greater
+	 * @return The next beat
+	 */
+	public int nextBeat() {
+		if (currentBeat == patternLength) {
+			currentBeat = 0;
+		}	
+		return currentBeat++;
+	}
+	
+	/**
+	 * Plays the beats in each of the pattern at the given beat
+	 * @param beat The index of the beat to play
+	 * @return Returns false when the beat was out the range 0 <= beat < patternLength
+	 */
+	public boolean playBeat(int beat) {
+		if (beat < patternLength && beat >= 0) {
+			for (Pattern pattern: patterns) {
+				pattern.playPosition(beat);
+			}
+			return true;
+		} else return false;
 	}
 	
 	/**
 	 * Stops the loop from playing
 	 */
 	public void stop() {
-		timer.cancel();
+		timer.stop();
 	}
 	
 	/**

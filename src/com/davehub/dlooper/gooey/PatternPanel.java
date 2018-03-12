@@ -118,6 +118,7 @@ public class PatternPanel extends JPanel {
 	// Methods
 	// -------
 	
+	
 	/**
 	 * Attempts to change the pattern to the given string and reports errors
 	 * @param pattern The pattern string to change to

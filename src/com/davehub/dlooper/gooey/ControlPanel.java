@@ -169,17 +169,24 @@ public class ControlPanel extends JPanel {
 		loadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	try {
-            		JFileChooser chooser = new JFileChooser();
-            		chooser.setCurrentDirectory(new File("samples"));
-            	    chooser.setFileFilter(new FileNameExtensionFilter("DLooper files", "dlf"));
-            	    //if file is approved, attempt to load it.
-            	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
-            	    	controller.loadFromFile(chooser.getSelectedFile().getPath());
-            	    	//refresh UI
-            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
-            	    	window.clearPatternPanels();
-            	    	window.refresh();
-            	    }
+            		int val = JOptionPane.showConfirmDialog(mainPanel, 
+                			"This will overwrite current loop, continue?",
+                			"Warning",
+                			JOptionPane.OK_CANCEL_OPTION);
+                	//if ok selected, create new loop and refresh UI
+                	if (val == 0) {
+	            		JFileChooser chooser = new JFileChooser();
+	            		chooser.setCurrentDirectory(new File("samples"));
+	            	    chooser.setFileFilter(new FileNameExtensionFilter("DLooper files", "dlf"));
+	            	    //if file is approved, attempt to load it.
+	            	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
+	            	    	controller.loadFromFile(chooser.getSelectedFile().getPath());
+	            	    	//refresh UI
+	            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
+	            	    	window.clearPatternPanels();
+	            	    	window.refresh();
+	            	    }
+                	}
             	} catch (Exception ex) {
             		JOptionPane.showMessageDialog(mainPanel,
         				    "Errors exist in the given file:\n" +
@@ -219,7 +226,7 @@ public class ControlPanel extends JPanel {
             	    chooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3", "m4a"));
             	    //if file chosen, add new pattern with given file
             	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
-            	    	controller.addPattern(chooser.getSelectedFile().getPath());
+            	    	controller.addPattern(chooser.getSelectedFile().getAbsolutePath());
             	    	//refresh ui
             	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
             	    	window.refresh();

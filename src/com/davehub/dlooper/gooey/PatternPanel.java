@@ -144,7 +144,6 @@ public class PatternPanel extends JPanel {
 	 * Refreshes this component with the Controller
 	 */
 	public void refresh() {
-		System.out.println("Pattern refresh");
 		audioLabel.setText(controller.getPattern(id).getSound().getFilePath());
 		patternField.setText(controller.getPattern(id).getPattern());
 	}

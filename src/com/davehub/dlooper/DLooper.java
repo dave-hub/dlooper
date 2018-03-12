@@ -229,9 +229,7 @@ public class DLooper implements Controller {
 	@Override
 	public void saveToFile(String filePath) throws IOException {
 		try (BufferedWriter bw = new BufferedWriter(new PrintWriter(filePath))) {
-			System.out.println("Writing to file: " + filePath);
 			bw.write(loop.toString());
-			System.out.println("Done.");
 			bw.close();
 		} catch (IOException e) {
 			throw e;

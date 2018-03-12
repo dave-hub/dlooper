@@ -181,7 +181,11 @@ public class ControlPanel extends JPanel {
             	    	window.refresh();
             	    }
             	} catch (Exception ex) {
-            		ex.printStackTrace();
+            		JOptionPane.showMessageDialog(mainPanel,
+        				    "Errors exist in the given file:\n" +
+        				    ex.getMessage(),
+        				    "Bad File",
+        				    JOptionPane.ERROR_MESSAGE);
             	}
             }
         });
@@ -198,7 +202,11 @@ public class ControlPanel extends JPanel {
             	    	controller.saveToFile(chooser.getSelectedFile().getPath());
             	    }
             	} catch (Exception ex) {
-            		ex.printStackTrace();
+            		JOptionPane.showMessageDialog(mainPanel,
+        				    "Unable to save to file.\n" +
+        				    ex.getMessage(),
+        				    "Save Error",
+        				    JOptionPane.ERROR_MESSAGE);
             	}
             }
         });
@@ -218,8 +226,11 @@ public class ControlPanel extends JPanel {
             	    }
             	} catch (Exception ex) {
             		ex.printStackTrace();
-            	} finally {
-            		
+            		JOptionPane.showMessageDialog(mainPanel,
+        				    "Unable to add new pattern.\n" +
+        				    ex.getMessage(),
+        				    "Add Error",
+        				    JOptionPane.ERROR_MESSAGE);
             	}
             }
         });

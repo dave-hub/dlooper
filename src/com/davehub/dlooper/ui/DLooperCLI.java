@@ -130,7 +130,9 @@ public class DLooperCLI extends Application {
 	 */
 	private void loadFromFile(String filePath) {
 		try {
+			System.out.println("Loading file: " + filePath);
 			controller.loadFromFile(filePath);
+			System.out.println("Done.");
 		} catch (FileNotFoundException e) {
 			System.err.println("ERROR: File not found");
 		} catch (Exception e) {
@@ -145,7 +147,9 @@ public class DLooperCLI extends Application {
 	 */
 	private void saveToFile(String filePath) {
 		try {
+			System.out.println("Writing to file: " + filePath);
 			controller.saveToFile(filePath);
+			System.out.println("Done.");
 		} catch (IOException e) {
 			System.err.println("ERROR: Could not write to file");
 		} catch (Exception e) {

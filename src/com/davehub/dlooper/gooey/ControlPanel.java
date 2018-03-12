@@ -124,8 +124,9 @@ public class ControlPanel extends JPanel {
             	try {
             		JFileChooser chooser = new JFileChooser();
             		chooser.setCurrentDirectory(new File("samples"));
+            		chooser.setSelectedFile(new File("untitled.dlf"));
             	    chooser.setFileFilter(new FileNameExtensionFilter("DLooper files", "dlf"));
-            	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
+            	    if(chooser.showSaveDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
             	    	controller.saveToFile(chooser.getSelectedFile().getPath());
             	    }
             	} catch (Exception ex) {

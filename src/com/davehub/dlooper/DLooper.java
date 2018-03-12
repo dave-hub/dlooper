@@ -74,7 +74,6 @@ public class DLooper implements Controller {
 		this.loop = loop;
 	}
 
-
 	/**
 	 * Sets the loop bpm to the given value
 	 * @param bpm The desired bpm value as an int

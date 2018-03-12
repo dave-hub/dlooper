@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 
 public class DLooperGUI extends Application {
 
-
 	public static void main(String[] args) throws IOException, Exception {
 		launch(args);
 	}

@@ -25,22 +25,77 @@ import com.davehub.dlooper.loop.Loop;
 @SuppressWarnings("serial")
 public class ControlPanel extends JPanel {
 
+	/**
+	 * The Controller this UI uses
+	 */
 	private Controller controller;
+	/**
+	 * The panel that holds all the Buttons
+	 */
 	private JPanel mainPanel;
+	/**
+	 * Button to create a new Loop
+	 */
 	private JButton newButton;
+	/**
+	 * Button to load loop from file
+	 */
 	private JButton loadButton;
+	/**
+	 * Button to save loop to file
+	 */
 	private JButton saveButton;
+	/**
+	 * Button to add a new Pattern to the Loop
+	 */
 	private JButton addButton;
+	/**
+	 * Button to play the Loop
+	 */
 	private JButton playButton;
+	/**
+	 * Button to stop playing the Loop
+	 */
 	private JButton stopButton;
+	/**
+	 * The Panel that stores the Loop settings
+	 */
 	private JPanel settingsPanel;
+	/**
+	 * The Label for the repeatCheckBox
+	 */
 	private JLabel repeatLabel;
+	/**
+	 * Checkbox for repeating Loop playback
+	 */
 	private JCheckBox repeatCheckBox;
+	/**
+	 * The Label for the BPM control
+	 */
 	private JLabel bpmLabel;
+	/**
+	 * The BPM input field
+	 */
 	private JTextField bpmField;
+	/**
+	 * The Label for patternLength control
+	 */
 	private JLabel patternLengthLabel;
+	/**
+	 * The patternLength input field
+	 */
 	private JTextField patternLengthField;
 	
+	
+	// -----------
+	// Constructor
+	// -----------
+	
+	
+	/**
+	 * Creates a new ControlPanel that uses the given Controller 
+	 * @param controller The Controller for this UI to use
+	 */
 	public ControlPanel(Controller controller) {
 		this.controller = controller;
 		
@@ -76,6 +131,7 @@ public class ControlPanel extends JPanel {
 		settingsPanel.add(patternLengthLabel);
 		settingsPanel.add(patternLengthField);
 		
+		//combine panels
 		super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		super.add(mainPanel);
 		super.add(settingsPanel);
@@ -83,7 +139,16 @@ public class ControlPanel extends JPanel {
 		setupListeners();
 	}
 	
-	public void setupListeners() {
+	
+	// ---------
+	// Listeners
+	// ---------
+	
+	
+	/**
+	 * Sets up the listeners for each Component
+	 */
+	private void setupListeners() {
 		//new loop
 		newButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -91,6 +156,7 @@ public class ControlPanel extends JPanel {
             			"This will overwrite current loop, continue?",
             			"Warning",
             			JOptionPane.OK_CANCEL_OPTION);
+            	//if ok selected, create new loop and refresh UI
             	if (val == 0) {
             		controller.setLoop(new Loop());
             		DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
@@ -106,15 +172,16 @@ public class ControlPanel extends JPanel {
             		JFileChooser chooser = new JFileChooser();
             		chooser.setCurrentDirectory(new File("samples"));
             	    chooser.setFileFilter(new FileNameExtensionFilter("DLooper files", "dlf"));
+            	    //if file is approved, attempt to load it.
             	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
-            	    	controller.loadFromFile(chooser.getSelectedFile().getPath());;
+            	    	controller.loadFromFile(chooser.getSelectedFile().getPath());
+            	    	//refresh UI
+            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
+            	    	window.clearPatternPanels();
+            	    	window.refresh();
             	    }
             	} catch (Exception ex) {
             		ex.printStackTrace();
-            	} finally {
-            		DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
-        	    	window.clearPatternPanels();
-        	    	window.refresh();
             	}
             }
         });
@@ -126,6 +193,7 @@ public class ControlPanel extends JPanel {
             		chooser.setCurrentDirectory(new File("samples"));
             		chooser.setSelectedFile(new File("untitled.dlf"));
             	    chooser.setFileFilter(new FileNameExtensionFilter("DLooper files", "dlf"));
+            	    //if file name chosen, save to file
             	    if(chooser.showSaveDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
             	    	controller.saveToFile(chooser.getSelectedFile().getPath());
             	    }
@@ -141,21 +209,22 @@ public class ControlPanel extends JPanel {
             		JFileChooser chooser = new JFileChooser();
             		chooser.setCurrentDirectory(new File("samples"));
             	    chooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3", "m4a"));
+            	    //if file chosen, add new pattern with given file
             	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
             	    	controller.addPattern(chooser.getSelectedFile().getPath());
+            	    	//refresh ui
+            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
+            	    	window.refresh();
             	    }
             	} catch (Exception ex) {
             		ex.printStackTrace();
             	} finally {
-            		DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
-        	    	window.clearPatternPanels();
-        	    	window.refresh();
+            		
             	}
             }
         });
 		//play loop
 		playButton.addActionListener(new ActionListener() {
- 
             public void actionPerformed(ActionEvent e) {
                 controller.play();
             }
@@ -202,11 +271,24 @@ public class ControlPanel extends JPanel {
 	    });
 	}
 	
+	
+	// -------
+	// Methods
+	// -------
+	
+	
+	/**
+	 * Refreshes this objects components with Controller
+	 */
 	public void refresh() {
 		bpmField.setText(controller.getBpm()+"");
 		patternLengthField.setText(controller.getPatternLength()+"");
 	}
 	
+	/**
+	 * Changes the patternLength to the integer value of the given string and reports errors if failed.
+	 * @param patternLength The String representing the new patternLength.
+	 */
 	private void changePatternLength(String patternLength) {
 		if (!DLooper.isNumeric(patternLength)) {
 			JOptionPane.showMessageDialog(this,
@@ -220,6 +302,10 @@ public class ControlPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Changes the BPM to the integer value of the given string and reports errors if failed.
+	 * @param BPM The String representing the new BPM.
+	 */
 	private void changeBpm(String bpm) {
 		if (!DLooper.isNumeric(bpm)) {
 			JOptionPane.showMessageDialog(this,

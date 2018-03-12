@@ -51,6 +51,11 @@ public class PatternPanel extends JPanel {
 	// -----------
 	
 	
+	/**
+	 * Creates a new PatternPanel for the pattern with the given id in the Controller's Loop
+	 * @param id The id of the Pattern within the Loop
+	 * @param controller The Controller for this UI
+	 */
 	public PatternPanel(int id, Controller controller) {
 		this.id = id;
 		this.controller = controller;
@@ -83,6 +88,15 @@ public class PatternPanel extends JPanel {
 		setupListeners();
 	}
 	
+	
+	// ---------
+	// Listeners
+	// ---------
+	
+	
+	/**
+	 * Setup listeners for components
+	 */
 	private void setupListeners() {
 		//pattern change on enter press
 		patternField.addActionListener(new ActionListener(){
@@ -104,6 +118,10 @@ public class PatternPanel extends JPanel {
 	// Methods
 	// -------
 	
+	/**
+	 * Attempts to change the pattern to the given string and reports errors
+	 * @param pattern The pattern string to change to
+	 */
 	public void changePattern(String pattern) {
 		if (patternField.getText().length() != controller.getPatternLength()) {
 			JOptionPane.showMessageDialog(this,
@@ -122,18 +140,12 @@ public class PatternPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Refreshes this component with the Controller
+	 */
 	public void refresh() {
 		System.out.println("Pattern refresh");
 		audioLabel.setText(controller.getPattern(id).getSound().getFilePath());
 		patternField.setText(controller.getPattern(id).getPattern());
 	}
-	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-	
 }

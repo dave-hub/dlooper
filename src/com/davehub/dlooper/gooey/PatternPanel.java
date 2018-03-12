@@ -1,7 +1,8 @@
 package com.davehub.dlooper.gooey;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -64,9 +65,20 @@ public class PatternPanel extends JPanel {
 		middlePanel.add(audioLabel);
 		middlePanel.add(patternField);
 		
-		super.add(idLabel, BorderLayout.PAGE_START);
-		super.add(middlePanel, BorderLayout.CENTER);
-		super.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.anchor = GridBagConstraints.FIRST_LINE_START;
+		add(idLabel, c);
+		c = new GridBagConstraints();
+		c.gridx = 1;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		add(middlePanel, c);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		setupListeners();
 	}
@@ -111,6 +123,7 @@ public class PatternPanel extends JPanel {
 	}
 	
 	public void refresh() {
+		System.out.println("Pattern refresh");
 		audioLabel.setText(controller.getPattern(id).getSound().getFilePath());
 		patternField.setText(controller.getPattern(id).getPattern());
 	}

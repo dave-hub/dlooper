@@ -1,6 +1,7 @@
 package com.davehub.dlooper.gooey;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -19,19 +20,20 @@ public class DLooperWindow extends JFrame {
 	private Controller controller;
 	
 	public DLooperWindow(Controller controller) {
+		super("DLooper");
 		this.controller = controller;
 		this.controlPanel = new ControlPanel(controller);
 		this.contentPanel = new JPanel(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		this.patternPanels = new ArrayList<PatternPanel>();
 		
-		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+		contentPanel.setLayout(new GridLayout(0, 1));
 		contentPanel.setBorder(new EmptyBorder(10,10,10,10));
 		
-		super.getContentPane().add(controlPanel, BorderLayout.PAGE_START);
-		super.getContentPane().add(contentPanel, BorderLayout.CENTER);
+		getContentPane().add(controlPanel, BorderLayout.PAGE_START);
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		
-		super.pack();
-		super.setVisible(true);
+		pack();
+		setVisible(true);
 	}
 	
 	private void addPatternPanel(PatternPanel panel) {
@@ -52,8 +54,10 @@ public class DLooperWindow extends JFrame {
 		}
 		//add new patterns
 		if (controller.getNumPatterns() != patternPanels.size()) {
-			for (int i = 0; i<(controller.getNumPatterns() - patternPanels.size()); i++) {
-				addPatternPanel(new PatternPanel(patternPanels.size() + i, controller));
+			int currentSize = patternPanels.size();
+			int newSize = controller.getNumPatterns();
+			for (int i = 0; i<(newSize - currentSize); i++) {
+				addPatternPanel(new PatternPanel(currentSize + i, controller));
 			}
 		}
 		super.setSize(getPreferredSize());

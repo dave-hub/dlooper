@@ -1,7 +1,6 @@
 package com.davehub.dlooper.gooey;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -35,8 +34,8 @@ public class ControlPanel extends JPanel {
 	private JButton playButton;
 	private JButton stopButton;
 	private JPanel settingsPanel;
+	private JLabel repeatLabel;
 	private JCheckBox repeatCheckBox;
-	private JPanel fieldPanel;
 	private JLabel bpmLabel;
 	private JTextField bpmField;
 	private JLabel patternLengthLabel;
@@ -63,23 +62,23 @@ public class ControlPanel extends JPanel {
 		mainPanel.add(stopButton);
 		
 		//settings panel
-		this.settingsPanel = new JPanel();
-		this.repeatCheckBox = new JCheckBox("Repeat");
-		this.bpmLabel = new JLabel("BPM: ");
+		this.settingsPanel = new JPanel(new FlowLayout());
+		this.repeatLabel = new JLabel("Repeat:");
+		this.repeatCheckBox = new JCheckBox();
+		this.bpmLabel = new JLabel("  BPM:");
 		this.bpmField = new JTextField(""+controller.getLoop().getBpm());
-		this.patternLengthLabel = new JLabel("Pattern Length: ");
+		this.patternLengthLabel = new JLabel("  Pattern Length:");
 		this.patternLengthField = new JTextField(""+controller.getLoop().getPatternLength());
-		this.fieldPanel = new JPanel();
-		fieldPanel.setLayout(new GridLayout(2, 2));
-		fieldPanel.add(bpmLabel);
-		fieldPanel.add(bpmField);
-		fieldPanel.add(patternLengthLabel);
-		fieldPanel.add(patternLengthField);
+		settingsPanel.add(repeatLabel);
 		settingsPanel.add(repeatCheckBox);
-		settingsPanel.add(fieldPanel);
+		settingsPanel.add(bpmLabel);
+		settingsPanel.add(bpmField);
+		settingsPanel.add(patternLengthLabel);
+		settingsPanel.add(patternLengthField);
 		
-		super.add(mainPanel, BorderLayout.WEST);
-		super.add(settingsPanel, BorderLayout.EAST);
+		super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		super.add(mainPanel);
+		super.add(settingsPanel);
 		
 		setupListeners();
 	}
@@ -95,8 +94,10 @@ public class ControlPanel extends JPanel {
             		JOptionPane.WARNING_MESSAGE,
             		null, options, options[0]
             	);
+            	prompt.createDialog(mainPanel, "Warning");
             	Object val = prompt.getValue();
             	if (val == options[0]) {
+            		System.out.println("lol");
             		controller.setLoop(new Loop());
             		DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
         	    	window.clearPatternPanels();
@@ -113,12 +114,13 @@ public class ControlPanel extends JPanel {
             	    chooser.setFileFilter(new FileNameExtensionFilter("DLooper files", "dlf"));
             	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
             	    	controller.loadFromFile(chooser.getSelectedFile().getPath());;
-            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
-            	    	window.clearPatternPanels();
-            	    	window.refresh();
             	    }
             	} catch (Exception ex) {
             		ex.printStackTrace();
+            	} finally {
+            		DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
+        	    	window.clearPatternPanels();
+        	    	window.refresh();
             	}
             }
         });
@@ -146,11 +148,13 @@ public class ControlPanel extends JPanel {
             	    chooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3", "m4a"));
             	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
             	    	controller.addPattern(chooser.getSelectedFile().getPath());
-            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
-            	    	window.refresh();
             	    }
             	} catch (Exception ex) {
             		ex.printStackTrace();
+            	} finally {
+            		DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
+        	    	window.clearPatternPanels();
+        	    	window.refresh();
             	}
             }
         });

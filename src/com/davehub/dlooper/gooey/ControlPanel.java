@@ -87,17 +87,11 @@ public class ControlPanel extends JPanel {
 		//new loop
 		newButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	Object[] options = { "OK", "CANCEL" };
-            	JOptionPane prompt = new JOptionPane(
-            		(Object) "Overwrite current loop?",
-            		JOptionPane.DEFAULT_OPTION,
-            		JOptionPane.WARNING_MESSAGE,
-            		null, options, options[0]
-            	);
-            	prompt.createDialog(mainPanel, "Warning");
-            	Object val = prompt.getValue();
-            	if (val == options[0]) {
-            		System.out.println("lol");
+            	int val = JOptionPane.showConfirmDialog(mainPanel, 
+            			"This will overwrite current loop, continue?",
+            			"Warning",
+            			JOptionPane.OK_CANCEL_OPTION);
+            	if (val == 0) {
             		controller.setLoop(new Loop());
             		DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
         	    	window.clearPatternPanels();

@@ -42,13 +42,13 @@ public class Loop {
 	 */
 	private int pollDelay;
 	/**
-	 * True if at the end of the pattern, it plays the pattern again immediatly after.
-	 */
-	private boolean repeat;
-	/**
 	 * The current beat during playback
 	 */
 	private int currentBeat;
+	/**
+	 * True if at the end of the pattern, it plays the pattern again immediatly after.
+	 */
+	private boolean repeat;
 	
 	
 	// ------------

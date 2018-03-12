@@ -3,6 +3,7 @@ package com.davehub.dlooper;
 import java.io.IOException;
 import java.util.Collection;
 
+import com.davehub.dlooper.loop.Loop;
 import com.davehub.dlooper.loop.Pattern;
 
 /**
@@ -32,6 +33,16 @@ public interface Controller {
 	 */
 	public int getBpm();
 	/**
+	 * Set this controller to use the given loop
+	 * @param loop The loop to use.
+	 */
+	public void setLoop(Loop loop);
+	/**
+	 * Returns the loop this controller uses
+	 * @return The loop instance this controller controls
+	 */
+	public Loop getLoop();
+	/**
 	 * Adds a new pattern with the specified audio file
 	 * @param filePath The path to the audio file
 	 * @throws Exception 
@@ -55,7 +66,7 @@ public interface Controller {
 	 * @param index The index of the pattern
 	 * @return Returns the pattern string at the given index
 	 */
-	public String getPattern(int index);
+	public Pattern getPattern(int index);
 	/**
 	 * Returns a list of the pattern strings in the loop.
 	 * @return The list of pattern strings
@@ -111,4 +122,10 @@ public interface Controller {
 	 * @param filePath
 	 */
 	public void loadFromFile(String filePath) throws IOException, Exception;
+	/**
+	 * Returns pattern string for pattern at given index
+	 * @param index The index of the pattern to retrieve
+	 * @return The pattern string of the pattern at the given index
+	 */
+	public String getPatternString(int index);
 }

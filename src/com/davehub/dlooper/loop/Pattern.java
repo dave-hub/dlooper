@@ -84,12 +84,13 @@ public class Pattern {
 	
 	/**
 	 * Checks the input pattern has the same length, and that it only contains the PAUSE_SYMBOL and the symbol variable as characters.
+	 * Checks length against existing pattern, assumes the pattern length is always maintained form initialisation.
 	 * @param pattern The pattern to test
 	 * @return True if the pattern given is of the right length and contains the right characters to be used in this pattern object
 	 */
-	private boolean validatePattern(String pattern) {
-		if (pattern.length() == pattern.length()) {
-			for (char x: pattern.toCharArray()) {
+	public boolean validatePattern(String test) {
+		if (pattern.length() == test.length()) {
+			for (char x: test.toCharArray()) {
 				if (!(x == PAUSE_SYMBOL || x == symbol)) {
 					return false;
 				}

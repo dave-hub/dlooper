@@ -24,7 +24,6 @@ public class DLooper implements Controller {
 	private Loop loop;
 	
 	
-	
 	// -----------
 	// Constructor
 	// -----------
@@ -41,8 +40,6 @@ public class DLooper implements Controller {
 	// -------
 	// Methods
 	// -------
-	
-	
 	
 	
 	/**
@@ -73,7 +70,7 @@ public class DLooper implements Controller {
 	 * Set this controller to use the given loop
 	 * @param loop The loop to use.
 	 */
-	private void setLoop(Loop loop) {
+	public void setLoop(Loop loop) {
 		this.loop = loop;
 	}
 
@@ -111,7 +108,6 @@ public class DLooper implements Controller {
 	
 	/**
 	 * Attempts to set the pattern at the given index to the given string
-	 * @see com.davehub.dlooper.Pattern.setPattern
 	 * @param index The index of the pattern within the loop's pattern array 
 	 * @param pattern The pattern which to attempt to use
 	 * @return True if the pattern was valid and the pattern has been changed.
@@ -171,12 +167,22 @@ public class DLooper implements Controller {
 	}
 	
 	/**
+	 * Returns pattern at given index
+	 * @param index The index of the pattern to retrieve
+	 * @return The pattern at the given index
+	 */
+	@Override
+	public Pattern getPattern(int index) {
+		return loop.getPatternAt(index);
+	}
+	
+	/**
 	 * Returns pattern string for pattern at given index
 	 * @param index The index of the pattern to retrieve
 	 * @return The pattern string of the pattern at the given index
 	 */
 	@Override
-	public String getPattern(int index) {
+	public String getPatternString(int index) {
 		return loop.getPatternAt(index).getPattern();
 	}
 	
@@ -235,6 +241,9 @@ public class DLooper implements Controller {
 	
 	/**
 	 * Loads the loop from the given file to this controller
+	 * @param filePath The path of the file to load
+	 * @throws IOException
+	 * @throws Exception
 	 */
 	public void loadFromFile(String filePath) throws IOException, Exception{
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
@@ -276,7 +285,12 @@ public class DLooper implements Controller {
 		setLoop(loop);
 	}
 	
-	private static boolean isNumeric(String str) {
+	/**
+	 * Checks whether a string is purely numeric or not
+	 * @param str The string to check
+	 * @return Returns true if the string contains only numbers
+	 */
+	public static boolean isNumeric(String str) {
 		return java.util.regex.Pattern.compile("[0-9]+").matcher(str).matches();
 	}
 	

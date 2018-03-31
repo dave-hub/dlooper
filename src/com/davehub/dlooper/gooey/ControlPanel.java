@@ -269,7 +269,7 @@ public class ControlPanel extends JPanel {
 		bpmField.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent arg0) {}
 	        public void focusLost(FocusEvent e) {
-	        	changeBpm(""+controller.getBpm());
+	        	changeBpm(bpmField.getText());
 	        }
 	    });
 		//change pattern length
@@ -284,7 +284,7 @@ public class ControlPanel extends JPanel {
 		patternLengthField.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent arg0) {}
 	        public void focusLost(FocusEvent e) {
-	            changePatternLength(""+controller.getPatternLength());
+	            changePatternLength(patternLengthField.getText());
 	        }
 	    });
 	}

@@ -88,17 +88,19 @@ public class Loop {
 	 * Starts a timer to play
 	 */
 	public void play() {
-		currentBeat = 0;
-		this.timer = new Timeline(new KeyFrame(
-		    Duration.millis(pollDelay),
-		    ae ->{playBeat(nextBeat());
-		}));
-		if (repeat) {
-			timer.setCycleCount(Animation.INDEFINITE);
-		} else {
-			timer.setCycleCount(patternLength);
+		if (timer.getStatus() != Animation.Status.RUNNING) {
+			currentBeat = 0;
+			this.timer = new Timeline(new KeyFrame(
+			    Duration.millis(pollDelay),
+			    ae ->{playBeat(nextBeat());
+			}));
+			if (repeat) {
+				timer.setCycleCount(Animation.INDEFINITE);
+			} else {
+				timer.setCycleCount(patternLength);
+			}
+			timer.play();
 		}
-		timer.play();
 	}
 	
 	/**
@@ -130,7 +132,8 @@ public class Loop {
 	 * Stops the loop from playing
 	 */
 	public void stop() {
-		timer.stop();
+		if (timer.getStatus() == Animation.Status.RUNNING)
+			timer.stop();
 	}
 	
 	/**

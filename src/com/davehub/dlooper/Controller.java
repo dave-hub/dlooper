@@ -128,4 +128,5 @@ public interface Controller {
 	 * @return The pattern string of the pattern at the given index
 	 */
 	public String getPatternString(int index);
+
 }

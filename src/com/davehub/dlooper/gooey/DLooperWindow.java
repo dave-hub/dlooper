@@ -86,16 +86,13 @@ public class DLooperWindow extends JFrame {
 	 */
 	public void refresh() {
 		controlPanel.refresh();
-		//refresh existing patterns
-		for (PatternPanel panel: patternPanels) {
-			panel.refresh();
-		}
-		//add new patterns
+		//remove and re-add patterns (deals with pattern removals
+		clearPatternPanels();
 		if (controller.getNumPatterns() != patternPanels.size()) {
 			int currentSize = patternPanels.size();
 			int newSize = controller.getNumPatterns();
 			for (int i = 0; i<(newSize - currentSize); i++) {
-				addPatternPanel(new PatternPanel(currentSize + i, controller));
+				addPatternPanel(new PatternPanel(currentSize + i, controller, this));
 			}
 		}
 		super.setSize(getPreferredSize());

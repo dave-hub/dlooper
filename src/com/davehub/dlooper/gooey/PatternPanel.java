@@ -10,6 +10,7 @@ import java.awt.event.FocusListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,9 +26,13 @@ public class PatternPanel extends JPanel {
 	 */
 	private int id;
 	/**
-	 * The Pattern this Panel represents
+	 * The Controller for the GUI
 	 */
 	private Controller controller;
+	/**
+	 * Root window this panel is contained in
+	 */
+	private DLooperWindow window;
 	/**
 	 * The label for displaying the id
 	 */
@@ -44,6 +49,10 @@ public class PatternPanel extends JPanel {
 	 * The field at which the pattern string can be edited
 	 */
 	private JTextField patternField;
+	/**
+	 * The Button for removing this pattern from the loop
+	 */
+	private JButton removeButton;
 	
 	
 	// -----------
@@ -56,15 +65,17 @@ public class PatternPanel extends JPanel {
 	 * @param id The id of the Pattern within the Loop
 	 * @param controller The Controller for this UI
 	 */
-	public PatternPanel(int id, Controller controller) {
+	public PatternPanel(int id, Controller controller, DLooperWindow window) {
 		this.id = id;
 		this.controller = controller;
+		this.window = window;
 		
 		//swing components
 		this.idLabel = new JLabel(id + ")");
 		this.middlePanel = new JPanel();
 		this.audioLabel = new JLabel(controller.getPattern(id).getSound().getFilePath());
 		this.patternField = new JTextField(controller.getPattern(id).getPattern());
+		this.removeButton = new JButton("X");
 		
 		middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 		middlePanel.add(audioLabel);
@@ -83,6 +94,11 @@ public class PatternPanel extends JPanel {
 		c.weightx = 1.0;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		add(middlePanel, c);
+		c = new GridBagConstraints();
+		c.gridx = 2;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.LAST_LINE_END;
+		add(removeButton, c);
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		setupListeners();
@@ -104,13 +120,20 @@ public class PatternPanel extends JPanel {
 				changePattern(patternField.getText());
             }
         });
-		//undo change on loss of focus
+		//change on loss of focus
 		patternField.addFocusListener(new FocusListener() {
 	        public void focusLost(FocusEvent e) {
-	        	patternField.setText(controller.getPatternString(id));
+	        	changePattern(patternField.getText());
 	        }
 			public void focusGained(FocusEvent arg0) {}
 	    });
+		//remove pattern on button click
+		removeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	controller.removePattern(id);
+            	window.refresh();
+            }
+		});
 	}
 
 	

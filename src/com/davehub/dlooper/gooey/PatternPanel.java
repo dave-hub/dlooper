@@ -7,14 +7,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.davehub.dlooper.Controller;
 
@@ -53,6 +57,10 @@ public class PatternPanel extends JPanel {
 	 * The Button for removing this pattern from the loop
 	 */
 	private JButton removeButton;
+	/**
+	 * The Button for changin this patterns sound file
+	 */
+	private JButton changeSoundButton;
 	
 	
 	// -----------
@@ -76,6 +84,7 @@ public class PatternPanel extends JPanel {
 		this.audioLabel = new JLabel(controller.getPattern(id).getSound().getFilePath());
 		this.patternField = new JTextField(controller.getPattern(id).getPattern());
 		this.removeButton = new JButton("X");
+		this.changeSoundButton = new JButton("File");
 		
 		middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 		middlePanel.add(audioLabel);
@@ -96,6 +105,10 @@ public class PatternPanel extends JPanel {
 		add(middlePanel, c);
 		c = new GridBagConstraints();
 		c.gridx = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		add(changeSoundButton, c);
+		c = new GridBagConstraints();
+		c.gridx = 3;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LAST_LINE_END;
 		add(removeButton, c);
@@ -127,6 +140,29 @@ public class PatternPanel extends JPanel {
 	        }
 			public void focusGained(FocusEvent arg0) {}
 	    });
+		changeSoundButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	try {
+            		JFileChooser chooser = new JFileChooser();
+            		chooser.setCurrentDirectory(new File("samples"));
+            	    chooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3", "m4a"));
+            	    //if file chosen, add new pattern with given file
+            	    if(chooser.showOpenDialog(middlePanel) == JFileChooser.APPROVE_OPTION) {
+            	    	controller.setPatternSound(id, chooser.getSelectedFile().getAbsolutePath());
+            	    	//refresh ui
+            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(middlePanel);
+            	    	window.refresh();
+            	    }
+            	} catch (Exception ex) {
+            		ex.printStackTrace();
+            		JOptionPane.showMessageDialog(middlePanel,
+        				    "Unable to change pattern sound file.\n" +
+        				    ex.getMessage(),
+        				    "Change Sound File Error",
+        				    JOptionPane.ERROR_MESSAGE);
+            	}
+            }
+        });
 		//remove pattern on button click
 		removeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

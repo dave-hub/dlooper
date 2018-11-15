@@ -1,6 +1,7 @@
 package com.davehub.dlooper.gooey;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -86,6 +87,10 @@ public class PatternPanel extends JPanel {
 		this.removeButton = new JButton("X");
 		this.changeSoundButton = new JButton("File");
 		
+		//change patternField font to monospace for clarity when editing
+		Font monofont = new Font(Font.MONOSPACED, Font.PLAIN, 18);
+		patternField.setFont(monofont);
+		
 		middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 		middlePanel.add(audioLabel);
 		middlePanel.add(patternField);
@@ -105,7 +110,7 @@ public class PatternPanel extends JPanel {
 		add(middlePanel, c);
 		c = new GridBagConstraints();
 		c.gridx = 2;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.LAST_LINE_END;
 		add(changeSoundButton, c);
 		c = new GridBagConstraints();
 		c.gridx = 3;

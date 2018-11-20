@@ -272,7 +272,7 @@ public class DLooper implements Controller {
 		
 		//add patterns
 		for (String patternLine: patternLines) {
-			String[] parts = patternLine.split(" ");
+			String[] parts = patternLine.split(" ", 2);
 			Pattern pattern = new Pattern(new DrumSound(parts[1]));
 			pattern.setPattern(parts[0]);
 			loop.addPattern(pattern);

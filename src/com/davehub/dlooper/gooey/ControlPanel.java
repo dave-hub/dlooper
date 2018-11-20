@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -85,6 +86,10 @@ public class ControlPanel extends JPanel {
 	 * The patternLength input field
 	 */
 	private JTextField patternLengthField;
+	/**
+	 * Parent JFrame
+	 */
+	private JFrame parentFrame;
 	
 	
 	// -----------
@@ -96,11 +101,12 @@ public class ControlPanel extends JPanel {
 	 * Creates a new ControlPanel that uses the given Controller 
 	 * @param controller The Controller for this UI to use
 	 */
-	public ControlPanel(Controller controller) {
+	public ControlPanel(Controller controller, JFrame parentFrame) {
 		this.controller = controller;
 		
 		//swing components
 		//main panel
+		this.parentFrame = parentFrame;
 		this.mainPanel = new JPanel();
 		this.newButton = new JButton("New");
 		this.loadButton = new JButton("Load");
@@ -220,24 +226,19 @@ public class ControlPanel extends JPanel {
 		//add new pattern
 		addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	try {
-            		JFileChooser chooser = new JFileChooser();
-            		chooser.setCurrentDirectory(new File("samples"));
-            	    chooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3", "m4a"));
-            	    //if file chosen, add new pattern with given file
-            	    if(chooser.showOpenDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
-            	    	controller.addPattern(chooser.getSelectedFile().getAbsolutePath());
-            	    	//refresh ui
-            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
-            	    	window.refresh();
-            	    }
-            	} catch (Exception ex) {
-            		ex.printStackTrace();
-            		JOptionPane.showMessageDialog(mainPanel,
-        				    "Unable to add new pattern.\n" +
-        				    ex.getMessage(),
-        				    "Add Error",
-        				    JOptionPane.ERROR_MESSAGE);
+            	String path = DLooperWindow.loadSoundFileWithPreview(parentFrame);
+            	if (path != null) {
+            		try {
+						controller.addPattern(path);
+						DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(mainPanel);
+		    	    	window.refresh();
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(parentFrame,
+	        				    "Unable to add pattern.\n" +
+	        				    ex.getMessage(),
+	        				    "Add Error",
+	        				    JOptionPane.ERROR_MESSAGE);
+					}
             	}
             }
         });

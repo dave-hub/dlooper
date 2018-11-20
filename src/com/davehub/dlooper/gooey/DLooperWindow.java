@@ -2,12 +2,16 @@ package com.davehub.dlooper.gooey;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.davehub.dlooper.Controller;
 
@@ -44,7 +48,7 @@ public class DLooperWindow extends JFrame {
 	public DLooperWindow(Controller controller) {
 		super("DLooper");
 		this.controller = controller;
-		this.controlPanel = new ControlPanel(controller);
+		this.controlPanel = new ControlPanel(controller, this);
 		this.contentPanel = new JPanel(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		this.patternPanels = new ArrayList<PatternPanel>();
 		
@@ -98,4 +102,40 @@ public class DLooperWindow extends JFrame {
 		super.setSize(getPreferredSize());
 	}
 
+	/**
+	 * Opens a window for loading a sound file, and once a file is selected, displays a confirmation window 
+	 * with a button to play the sound they've chosen, and confirm if
+	 * @param panel The Component object for which the ui pop-ups display
+	 */
+	protected static String loadSoundFileWithPreview(JFrame parent) {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new File("samples"));
+		do {
+			try {
+	    	    chooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3", "m4a"));
+	    	    //if file chosen, add new pattern with given file
+	    	    if(chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+	    	    	int val = PreviewSoundWindow.previewFile(chooser.getSelectedFile().getAbsolutePath(), parent);
+	    	    	if (val == PreviewSoundWindow.CONFIRMED) {
+		    	    	return chooser.getSelectedFile().getAbsolutePath();
+	    	    	} else if (val == PreviewSoundWindow.CHANGE_FILE) {
+	    	    		chooser.setCurrentDirectory(chooser.getSelectedFile().getParentFile());
+	    	    		continue;
+	    	    	} else if (val == PreviewSoundWindow.CANCELLED) {
+	    	    		break;
+	    	    	}
+	    	    } else {
+	    	    	break;
+	    	    }
+	    	} catch (Exception ex) {
+	    		ex.printStackTrace();
+	    		JOptionPane.showMessageDialog(parent,
+					    ex.getMessage(),
+					    "File Error",
+					    JOptionPane.ERROR_MESSAGE);
+	    		break;
+	    	}
+		} while (true);
+		return null;
+	}
 }

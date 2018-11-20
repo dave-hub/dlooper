@@ -8,18 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.davehub.dlooper.Controller;
 
@@ -148,24 +144,18 @@ public class PatternPanel extends JPanel {
 		changeSoundButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	try {
-            		JFileChooser chooser = new JFileChooser();
-            		chooser.setCurrentDirectory(new File("samples"));
-            	    chooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3", "m4a"));
-            	    //if file chosen, add new pattern with given file
-            	    if(chooser.showOpenDialog(middlePanel) == JFileChooser.APPROVE_OPTION) {
-            	    	controller.setPatternSound(id, chooser.getSelectedFile().getAbsolutePath());
-            	    	//refresh ui
-            	    	DLooperWindow window = (DLooperWindow) SwingUtilities.getWindowAncestor(middlePanel);
-            	    	window.refresh();
-            	    }
-            	} catch (Exception ex) {
-            		ex.printStackTrace();
-            		JOptionPane.showMessageDialog(middlePanel,
-        				    "Unable to change pattern sound file.\n" +
+            		String path = DLooperWindow.loadSoundFileWithPreview(window);
+                	if (path != null) {
+                		controller.setPatternSound(id, path);
+                		window.refresh();
+                	}
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(window,
+        				    "Unable to add pattern.\n" +
         				    ex.getMessage(),
-        				    "Change Sound File Error",
+        				    "Add Error",
         				    JOptionPane.ERROR_MESSAGE);
-            	}
+				}
             }
         });
 		//remove pattern on button click

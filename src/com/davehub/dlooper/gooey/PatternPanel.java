@@ -8,14 +8,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.davehub.dlooper.Controller;
 
@@ -51,6 +57,14 @@ public class PatternPanel extends JPanel {
 	 */
 	private JTextField patternField;
 	/**
+	 * The slider fot the volume of this pattern
+	 */
+	private JSlider volumeSlider;
+	/**
+	 * The checkbox to mute this pattern
+	 */
+	private JCheckBox muteCheckBox;
+	/**
 	 * The Button for removing this pattern from the loop
 	 */
 	private JButton removeButton;
@@ -80,6 +94,8 @@ public class PatternPanel extends JPanel {
 		this.middlePanel = new JPanel();
 		this.audioLabel = new JLabel(controller.getPattern(id).getSound().getFilePath());
 		this.patternField = new JTextField(controller.getPattern(id).getPattern());
+		this.volumeSlider = new JSlider(0, 100);
+		this.muteCheckBox = new JCheckBox("Mute");
 		this.removeButton = new JButton("X");
 		this.changeSoundButton = new JButton("File");
 		
@@ -107,9 +123,17 @@ public class PatternPanel extends JPanel {
 		c = new GridBagConstraints();
 		c.gridx = 2;
 		c.anchor = GridBagConstraints.LAST_LINE_END;
-		add(changeSoundButton, c);
+		add(muteCheckBox, c);
 		c = new GridBagConstraints();
 		c.gridx = 3;
+		c.anchor = GridBagConstraints.LAST_LINE_END;
+		add(volumeSlider, c);
+		c = new GridBagConstraints();
+		c.gridx = 4;
+		c.anchor = GridBagConstraints.LAST_LINE_END;
+		add(changeSoundButton, c);
+		c = new GridBagConstraints();
+		c.gridx = 5;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LAST_LINE_END;
 		add(removeButton, c);
@@ -141,6 +165,7 @@ public class PatternPanel extends JPanel {
 	        }
 			public void focusGained(FocusEvent arg0) {}
 	    });
+		//change sound on button click
 		changeSoundButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	try {
@@ -164,6 +189,18 @@ public class PatternPanel extends JPanel {
             	controller.removePattern(id);
             	window.refresh();
             }
+		});
+		//change mute value on box checking or unchecking
+		muteCheckBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				controller.setPatternMute(id, ((JCheckBox) e.getSource()).isSelected());
+			}
+		});
+		//change volume on slider change
+		volumeSlider.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				controller.setPatternVolume(id, (((JSlider) e.getSource()).getValue() / 100f));
+			}
 		});
 	}
 

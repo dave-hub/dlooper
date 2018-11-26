@@ -128,5 +128,18 @@ public interface Controller {
 	 * @return The pattern string of the pattern at the given index
 	 */
 	public String getPatternString(int index);
+	/**
+	 * Sets the mute value for the sound of the pattern at the given index to the given value
+	 * @param index The index of the PAttern to change within the loop ArrayList
+	 * @param value The value to set it to, True for muted.
+	 * @return value
+	 */
+	public void setPatternMute(int index, boolean value);
+	/**
+	 * Sets the volume of the sound of the pattern at the given index to the given value
+	 * @param index The index of the PAttern to change within the loop ArrayList
+	 * @param value The value to set the volume to
+	 */
+	public void setPatternVolume(int index, double value);
 
 }

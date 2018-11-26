@@ -283,6 +283,25 @@ public class DLooper implements Controller {
 	}
 	
 	/**
+	 * Sets the mute value for the sound of the pattern at the given index to the given value
+	 * @param index The index of the PAttern to change within the loop ArrayList
+	 * @param value The value to set it to, True for muted.
+	 * @return value
+	 */
+	public void setPatternMute(int index, boolean value) {
+		loop.getPatternAt(index).getSound().getPlayer().setMute(value);
+	}
+	
+	/**
+	 * Sets the volume of the sound of the pattern at the given index to the given value
+	 * @param index The index of the PAttern to change within the loop ArrayList
+	 * @param value The value to set the volume to
+	 */
+	public void setPatternVolume(int index, double value) {
+		loop.getPatternAt(index).getSound().getPlayer().setVolume(value);
+	}
+	
+	/**
 	 * Checks whether a string is purely numeric or not
 	 * @param str The string to check
 	 * @return Returns true if the string contains only numbers
@@ -290,5 +309,4 @@ public class DLooper implements Controller {
 	public static boolean isNumeric(String str) {
 		return java.util.regex.Pattern.compile("[0-9]+").matcher(str).matches();
 	}
-	
 }

@@ -87,19 +87,21 @@ public class Loop {
 	/**
 	 * Starts a timer to play
 	 */
-	public void play() {
-		if (timer.getStatus() != Animation.Status.RUNNING) {
-			currentBeat = 0;
-			this.timer = new Timeline(new KeyFrame(
-			    Duration.millis(pollDelay),
-			    ae ->{playBeat(nextBeat());
-			}));
-			if (repeat) {
-				timer.setCycleCount(Animation.INDEFINITE);
-			} else {
-				timer.setCycleCount(patternLength);
+	public synchronized void play() {
+		synchronized(this) {
+			if (timer.getStatus() != Animation.Status.RUNNING) {
+				currentBeat = 0;
+				this.timer = new Timeline(new KeyFrame(
+				    Duration.millis(pollDelay),
+				    ae ->{playBeat(nextBeat());
+				}));
+				if (repeat) {
+					timer.setCycleCount(Animation.INDEFINITE);
+				} else {
+					timer.setCycleCount(patternLength);
+				}
+				timer.play();
 			}
-			timer.play();
 		}
 	}
 	
@@ -107,11 +109,13 @@ public class Loop {
 	 * Returns the next beat, increasing the value of the current beat so the next call will be one greater
 	 * @return The next beat
 	 */
-	public int nextBeat() {
-		if (currentBeat == patternLength) {
-			currentBeat = 0;
-		}	
-		return currentBeat++;
+	public synchronized int nextBeat() {
+		synchronized(this) {
+			if (this.currentBeat == this.patternLength) {
+				this.currentBeat = 0;
+			}	
+			return this.currentBeat++;
+		}
 	}
 	
 	/**
@@ -131,9 +135,16 @@ public class Loop {
 	/**
 	 * Stops the loop from playing
 	 */
-	public void stop() {
-		if (timer.getStatus() == Animation.Status.RUNNING)
-			timer.stop();
+	public synchronized void stop() {
+		synchronized(this) {
+			if (timer.getStatus() == Animation.Status.RUNNING) {
+				this.timer.stop();
+				this.currentBeat = 0;
+				for (Pattern pattern: patterns) {
+					pattern.getSound().stop_playing();
+				}
+			}
+		}
 	}
 	
 	/**
@@ -173,7 +184,7 @@ public class Loop {
 	 * Is called in setBpm for synchronicity
 	 */
 	private void updatePollDelay() {
-		setPollDelay(60000 / bpm);
+		setPollDelay((int) (60000.0f / bpm));
 	}
 	
 	

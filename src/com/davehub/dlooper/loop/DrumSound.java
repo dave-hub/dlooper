@@ -12,9 +12,13 @@ public class DrumSound extends Thread {
 	 */
 	private String filePath;
 	/**
-	 * The clip used to play audio streams to the system
+	 * The Media object representing the sound
 	 */
 	private Media media;
+	/**
+	 * The MediaPlayer object that plays the media
+	 */
+	private MediaPlayer player;
 	
 	
 	// ------------
@@ -63,6 +67,7 @@ public class DrumSound extends Thread {
 		try {
 			this.filePath = filePath;
 			this.media = new Media(new File(filePath).toURI().toString());
+			this.player = new MediaPlayer(media);
 		} catch (Exception e) {
 			throw new Exception("Unable to read file: " + filePath);
 		}
@@ -72,7 +77,14 @@ public class DrumSound extends Thread {
 	 * Plays this DrumSound's audio
 	 */
 	public void play() {
-		new MediaPlayer(media).play();
+		System.out.println("play " + filePath);
+		player.play();
 	}
 	
+	/**
+	 * Stops the DrumSound's audio
+	 */
+	public void stop_playing() {
+		player.stop();
+	}
 }

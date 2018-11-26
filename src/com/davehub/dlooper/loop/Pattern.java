@@ -69,6 +69,8 @@ public class Pattern {
 		if (pattern.charAt(patternPosition) == symbol) {
 			sound.play();
 			return true;
+		} else {
+			sound.stop_playing();
 		}
 		return false;
 	}

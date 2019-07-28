@@ -297,7 +297,7 @@ public class DLooper implements Controller {
 	 * @param index The index of the PAttern to change within the loop ArrayList
 	 * @param value The value to set the volume to
 	 */
-	public void setPatternVolume(int index, double value) {
+	public synchronized void setPatternVolume(int index, double value) {
 		loop.getPatternAt(index).getSound().getPlayer().setVolume(value);
 	}
 	

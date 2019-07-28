@@ -6,7 +6,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-public class DrumSound extends Thread {
+public class DrumSound {
 
 	/**
 	 * The path to the sound file 
@@ -54,28 +54,23 @@ public class DrumSound extends Thread {
 	 * Returns the Media instance this DrumSound uses
 	 * @return the Media instance this sound represents
 	 */
-	public synchronized Media getMedia() {
-		synchronized(this) {
-			return this.media;
-		}
+	public Media getMedia() {
+		return this.media;
 	}
 	
 	/**
 	 * Returns the MediaPlayer instance that plays this sound
-	 * If i'm honest im not sure if i even need the synchronized stuff here
 	 * @return see above
 	 */
-	public synchronized MediaPlayer getPlayer() {
-		synchronized(this) {
-			return this.player;
-		}
+	public MediaPlayer getPlayer() {
+		return this.player;
 	}
 
 	/**
 	 * Sets the filePath to the new filePath, updating the audiostream too
 	 * @param filePath
 	 */
-	public void setFilePath(String filePath) throws Exception {
+	public synchronized void setFilePath(String filePath) throws Exception {
 		try {
 			this.filePath = filePath;
 			this.media = new Media(new File(filePath).toURI().toString());
@@ -88,8 +83,7 @@ public class DrumSound extends Thread {
 	/**
 	 * Plays this DrumSound's audio
 	 */
-	public void play() {
-		System.out.println("play " + filePath);
+	public synchronized void play() {
 		player.seek(Duration.ZERO);
 		player.play();
 	}
@@ -97,7 +91,7 @@ public class DrumSound extends Thread {
 	/**
 	 * Stops the DrumSound's audio
 	 */
-	public void stop_playing() {
+	public synchronized void stop_playing() {
 		player.stop();
 	}
 	

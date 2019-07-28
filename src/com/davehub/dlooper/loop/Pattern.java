@@ -39,8 +39,6 @@ public class Pattern {
 		this.pattern = pattern;
 		this.sound = sound;
 		this.symbol = symbol;
-		Thread t = new Thread(sound);
-		t.start();
 	}
 	
 	/**
@@ -62,17 +60,11 @@ public class Pattern {
 	 * @param patternPosition The position at which  there should be a sound played
 	 * @return True if a sound is played
 	 */
-	public boolean playPosition(int patternPosition) {
-		if (patternPosition >= pattern.length()) {
-			return false;
-		}
-		if (pattern.charAt(patternPosition) == symbol) {
+	public synchronized boolean playPosition(int patternPosition) {
+		if (patternPosition < pattern.length() && pattern.charAt(patternPosition) == symbol) {
 			sound.play();
 			return true;
-		} else {
-			sound.stop_playing();
-		}
-		return false;
+		} else return false;
 	}
 	
 	/**
@@ -103,7 +95,7 @@ public class Pattern {
 	 * @param filePath The path to the audio file to change the sound to
 	 * @throws Exception 
 	 */
-	public void setSoundFilePath(String filePath) throws Exception {
+	public synchronized void setSoundFilePath(String filePath) throws Exception {
 		sound.setFilePath(filePath);
 	}
 	
@@ -125,7 +117,7 @@ public class Pattern {
 	 * Sets the pattern to play the given sound
 	 * @param sound The DrumSound to make this pattern play
 	 */
-	public void setSound(DrumSound sound) {
+	public synchronized void setSound(DrumSound sound) {
 		this.sound = sound;
 	}
 
@@ -142,7 +134,7 @@ public class Pattern {
 	 * @param pattern The string which represents the pattern
 	 * @return Returns false when the given pattern is not the same length as the length attribute, ensuring patterns are all the same length
 	 */
-	public boolean setPattern(String pattern) {
+	public synchronized boolean setPattern(String pattern) {
 		if (validatePattern(pattern)) {
 			this.pattern = pattern;
 			return true;
@@ -161,7 +153,7 @@ public class Pattern {
 	 * Sets the length of the pattern string, and resizes the current pattern either by add PAUSE_SYMBOL's ('-') or cutting the end of the string off.
 	 * @param length The value to set the length to
 	 */
-	public boolean setLength(int length) {
+	public synchronized boolean setLength(int length) {
 		if (length > 0) {
 			while (pattern.length() < length) {
 				pattern += PAUSE_SYMBOL;
@@ -183,7 +175,7 @@ public class Pattern {
 	 * Sets the symbol used to represent an audible beat in the pattern string to the given character symbol
 	 * @param symbol The character to set as the symbol
 	 */
-	public boolean setSymbol(char symbol) {
+	public synchronized boolean setSymbol(char symbol) {
 		if(symbol != DEFAULT_SYMBOL) {
 			this.symbol = symbol;
 			return true;
